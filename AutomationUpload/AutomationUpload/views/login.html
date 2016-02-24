@@ -5,10 +5,10 @@
         <div class="login">
             <div class="login-header"><h3>:::Login:::</h3></div>           
             <div class="login-body">
-                <label for=""><ng-md-icon icon="face" style="fill:pink" size="40"></ng-md-icon><input type="text" placeholder="Bonifacio.Martinez"/></label>
-                <label for=""><ng-md-icon icon="screen_lock_landscape" style="fill:#3ae290" size="40"></ng-md-icon><input type="password" placeholder="******"/></label>
+                <label for=""><ng-md-icon icon="face" style="fill:pink" size="40"></ng-md-icon><input type="text" ng-model="user" id="user" placeholder="Bonifacio.Martinez" /></label>
+                <label for=""><ng-md-icon icon="screen_lock_landscape" style="fill:#3ae290" size="40"></ng-md-icon><input type="password" ng-model="password" id="password" placeholder="******" /></label>
                 <hr />
-                <button class="btn-login">Login</button><span> olvidaste tu contraseña?...</span>
+                <button class="btn-login">Login</button> <a href="#"> Olvidaste tu contraseña?...</a>
             </div>
         </div>
     </div>

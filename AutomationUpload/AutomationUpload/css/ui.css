@@ -54,3 +54,13 @@
 {
     background-color:#35a2a5;
 }
+
+.login a
+{
+      font-size:12px;
+      color:#47ccd0;
+}
+
+.login a:hover,.login a:focus{
+    color:#35a2a5;
+}
