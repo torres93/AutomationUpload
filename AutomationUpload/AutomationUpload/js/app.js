@@ -5,7 +5,15 @@ app.config(
 		when('/', {
 		    templateUrl: 'views/login.html',
             controller:"homeCtrl"
-		})
+		}).
+        when('/login', {
+            templateUrl: 'views/login.html',
+            controller: "homeCtrl"
+        }).
+        when('/admin',{
+            templateUrl: 'views/admin.html',
+            controller: "homeCtrl"
+        })
      .otherwise({
          redirectTo: '/'
      });
@@ -21,5 +29,5 @@ app.config(function ($mdThemingProvider) {
 
 
 app.controller("homeCtrl", function () {
-    alert("hola");
+
 })
