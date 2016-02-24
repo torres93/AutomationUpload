@@ -4,15 +4,13 @@ app.config(
 	    $routeProvider.
 		when('/', {
 		    templateUrl: 'views/login.html',
-            controller:"homeCtrl"
+            controller:""
 		}).
         when('/login', {
             templateUrl: 'views/login.html',
-            controller: "homeCtrl"
         }).
         when('/admin',{
             templateUrl: 'views/admin.html',
-            controller: "homeCtrl"
         })
      .otherwise({
          redirectTo: '/'

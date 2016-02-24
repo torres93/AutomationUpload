@@ -1,0 +1,15 @@
+﻿body {
+}
+
+.login
+{
+    border:1px solid #5a5858;
+    background-color:#5a5858;
+    border-radius:8px;
+}
+
+.login-header
+{
+    text-align:center;
+    color:#43e0a6;
+}
