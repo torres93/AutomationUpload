@@ -3,7 +3,8 @@ app.config(
 	function ($routeProvider) {
 	    $routeProvider.
 		when('/', {
-		    templateUrl: 'views/login.html'
+		    templateUrl: 'views/login.html',
+            controller:"homeCtrl"
 		})
      .otherwise({
          redirectTo: '/'
@@ -16,4 +17,9 @@ app.config(function ($mdThemingProvider) {
       .accentPalette('pink')
       .warnPalette('red')
     ;
+})
+
+
+app.controller("homeCtrl", function () {
+    alert("hola");
 })
