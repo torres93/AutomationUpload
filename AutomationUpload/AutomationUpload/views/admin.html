@@ -1,18 +1,32 @@
-﻿<script>
-    angular.controller("admin", function () {
-        alert("hola admin");
-    })
-</script>
-<div layout="row" ng-controller="admin">
+﻿
+<div layout="row">
     <div flex>
         <div style="padding:5%;">
             <h1>Lista de usuarios</h1>
+            <md-input-container class="md-icon-float md-block">
+                <label>Buscar usuario</label>
+                <md-icon md-svg-src="../imgs/icos/buscar.svg" class="name"></md-icon>
+                <input ng-model="buscar" type="text">
+            </md-input-container>
             <md-list>
                 <md-list-item class="md-3-line">
-                    <img ng-src="../img/pen13.svg" class="md-avatar" alt="Examen" />
+                    <img ng-src="../imgs/icos/user.svg" class="md-avatar" alt="Examen" />
                     <div class="md-list-item-text" layout="column">
                         <h3">
                             <b>Nombre: </b>Juan Carlos</h3>
+                            <p><b>A.Paterno: </b>Torres</p>
+                            <p><b>A.Materno: </b>Zapata</p>
+                            <p><b>Correo: </b>jcarlos@gmail.com</p>
+                    </div>
+                    <md-button class="md-raised md-warn" ng-click="editarUsuario(user)">Editar</md-button>
+                    <md-divider></md-divider>
+                    <br>
+                </md-list-item>
+                <md-list-item class="md-3-line">
+                    <img ng-src="../imgs/icos/user.svg" class="md-avatar" alt="Examen" />
+                    <div class="md-list-item-text" layout="column">
+                        <h3">
+                            <b>Nombre: </b>Juan Carlos2</h3>
                             <p><b>A.Paterno: </b>Torres</p>
                             <p><b>A.Materno: </b>Zapata</p>
                             <p><b>Correo: </b>jcarlos@gmail.com</p>
@@ -36,32 +50,32 @@
                         <md-content class="md-padding" id="editarUser">
                             <md-input-container class="md-icon-float md-block">
                                 <label>Nombre</label>
-                                <md-icon md-svg-src="img/user.svg" class="name"></md-icon>
+                                <md-icon md-svg-src="../imgs/icos/user.svg" class="name"></md-icon>
                                 <input ng-model="useredit.nombre" type="text">
                             </md-input-container>
 
                             <md-input-container class="md-icon-float md-block">
                                 <label>Apellido Paterno</label>
-                                <md-icon md-svg-src="img/user.svg" class="name"></md-icon>
+                                <md-icon md-svg-src="../imgs/icos/user.svg" class="name"></md-icon>
                                 <input ng-model="useredit.apellidoP" type="text">
                             </md-input-container>
 
                             <md-input-container class="md-icon-float md-block">
                                 <label>Apellido Materno</label>
-                                <md-icon md-svg-src="img/user.svg" class="name"></md-icon>
+                                <md-icon md-svg-src="../imgs/icos/user.svg" class="name"></md-icon>
                                 <input ng-model="useredit.apellidoM" type="text">
                             </md-input-container>
 
                             <md-input-container class="md-icon-float md-block">
                                 <label>Contraseña</label>
-                                <md-icon md-svg-src="img/user.svg" class="name"></md-icon>
+                                <md-icon md-svg-src="../imgs/icos/user.svg" class="name"></md-icon>
                                 <input ng-model="useredit.contra" type="password">
                             </md-input-container>
       
 
                             <!-- Use floating label instead of placeholder -->
-                            <md-button class="md-raised md-warn" ng-click="useredit=''">Cancelar <md-icon md-svg-src="img/cancelar.svg" class="name"></md-icon></md-button>
-                            <md-button class="md-raised md-primary" ng-click="editUser(useredit)">Guardar <md-icon md-svg-src="img/aceptar.svg" class="name"></md-icon></md-button>
+                            <md-button class="md-raised md-warn" ng-click="useredit=''">Cancelar <md-icon md-svg-src="../imgs/icos/cancelar.svg" class="name"></md-icon></md-button>
+                            <md-button class="md-raised md-primary" ng-click="editUser(useredit)">Guardar <md-icon md-svg-src="../imgs/icos/aceptar.svg" class="name"></md-icon></md-button>
                         </md-content>
                     </md-content>
 
