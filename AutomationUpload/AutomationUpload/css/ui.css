@@ -3,13 +3,54 @@
 
 .login
 {
-    border:1px solid #5a5858;
-    background-color:#5a5858;
-    border-radius:8px;
+    font-size:16px;
+    font-family: 'Cabin Condensed', sans-serif;
+    margin-top:100px;
+    border:1px solid #cac8c8;
 }
 
 .login-header
 {
+    padding:10px;
+    background-color:#5a5858;
     text-align:center;
-    color:#43e0a6;
+    color:#ffffff;
+    vertical-align:middle;
+}
+.login-body
+{
+    padding:20px;
+}
+
+.login-body label
+{
+    display:block;
+    margin-top:15px;   
+    margin-bottom:15px;
+    
+}
+.login-body input
+{
+   background-color:transparent;
+   border:1px solid #cac8c8;
+   width:80%;
+   padding:8px;
+   float:right;
+}
+
+.btn-login
+{
+    margin-top:10px;
+    background-color:#47ccd0;
+    color:#ffffff;
+    padding:12px;
+    padding-left:15px;
+    padding-right:15px;
+    border:none;
+}
+
+
+.btn-login:hover
+{
+    background-color:#35a2a5;
 }

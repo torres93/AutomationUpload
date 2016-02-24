@@ -1,4 +1,4 @@
-﻿var app = angular.module("AutomationUpload", ['ngRoute', 'ngMaterial', 'ngMessages']);
+﻿var app = angular.module("AutomationUpload", ['ngRoute', 'ngMaterial', 'ngMessages','ngMdIcons']);
 app.config(
 	function ($routeProvider) {
 	    $routeProvider.
