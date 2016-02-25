@@ -9,29 +9,16 @@
                 <input ng-model="buscar" type="text">
             </md-input-container>
             <md-list>
-                <md-list-item class="md-3-line">
+                <md-list-item class="md-3-line" ng-repeat="usr in usuarios | filter:buscar track by $index">
                     <img ng-src="../imgs/icos/user.svg" class="md-avatar" alt="Examen" />
                     <div class="md-list-item-text" layout="column">
                         <h3">
-                            <b>Nombre: </b>Juan Carlos</h3>
-                            <p><b>A.Paterno: </b>Torres</p>
-                            <p><b>A.Materno: </b>Zapata</p>
-                            <p><b>Correo: </b>jcarlos@gmail.com</p>
+                            <b>Nombre: </b>{{usr.nombre}}</h3>
+                            <p><b>A.Paterno: </b>{{usr.apellido_p}}</p>
+                            <p><b>A.Materno: </b>{{usr.apellido_m}}</p>
+                            <p><b>Correo: </b>{{usr.correo}}</p>
                     </div>
-                    <md-button class="md-raised md-warn" ng-click="editarUsuario(user)">Editar</md-button>
-                    <md-divider></md-divider>
-                    <br>
-                </md-list-item>
-                <md-list-item class="md-3-line">
-                    <img ng-src="../imgs/icos/user.svg" class="md-avatar" alt="Examen" />
-                    <div class="md-list-item-text" layout="column">
-                        <h3">
-                            <b>Nombre: </b>Juan Carlos2</h3>
-                            <p><b>A.Paterno: </b>Torres</p>
-                            <p><b>A.Materno: </b>Zapata</p>
-                            <p><b>Correo: </b>jcarlos@gmail.com</p>
-                    </div>
-                    <md-button class="md-raised md-warn" ng-click="editarUsuario(user)">Editar</md-button>
+                    <md-button class="md-raised md-warn" ng-click="editarUsuario(usr)">Editar</md-button>
                     <md-divider></md-divider>
                     <br>
                 </md-list-item>
@@ -39,56 +26,64 @@
         </div>
     </div>
     <div flex>
-        <h1>Información del usuario</h1>
-        <md-tabs md-dynamic-height md-border-bottom>
-            <md-tab>
-                <md-tab-label>
-                    Inf. Personal
-                </md-tab-label>
-                <md-tab-body>
-                    <md-content class="md-padding">
-                        <md-content class="md-padding" id="editarUser">
-                            <md-input-container class="md-icon-float md-block">
-                                <label>Nombre</label>
-                                <md-icon md-svg-src="../imgs/icos/user.svg" class="name"></md-icon>
-                                <input ng-model="useredit.nombre" type="text">
-                            </md-input-container>
+        <div style="padding:5%;">
+            <h1>Información del usuario</h1>
+            <md-tabs md-dynamic-height md-border-bottom>
+                <md-tab>
+                    <md-tab-label>
+                        Inf. Personal
+                    </md-tab-label>
+                    <md-tab-body>
+                        <md-content class="md-padding">
+                            <md-content class="md-padding" id="editarUser">
+                                <md-input-container class="md-icon-float md-block">
+                                    <label>Nombre</label>
+                                    <md-icon md-svg-src="../imgs/icos/user.svg" class="name"></md-icon>
+                                    <input ng-model="userEdit.nombre" type="text">
+                                </md-input-container>
 
-                            <md-input-container class="md-icon-float md-block">
-                                <label>Apellido Paterno</label>
-                                <md-icon md-svg-src="../imgs/icos/user.svg" class="name"></md-icon>
-                                <input ng-model="useredit.apellidoP" type="text">
-                            </md-input-container>
+                                <md-input-container class="md-icon-float md-block">
+                                    <label>Apellido Paterno</label>
+                                    <md-icon md-svg-src="../imgs/icos/user.svg" class="name"></md-icon>
+                                    <input ng-model="userEdit.apellido_p" type="text">
+                                </md-input-container>
 
-                            <md-input-container class="md-icon-float md-block">
-                                <label>Apellido Materno</label>
-                                <md-icon md-svg-src="../imgs/icos/user.svg" class="name"></md-icon>
-                                <input ng-model="useredit.apellidoM" type="text">
-                            </md-input-container>
+                                <md-input-container class="md-icon-float md-block">
+                                    <label>Apellido Materno</label>
+                                    <md-icon md-svg-src="../imgs/icos/user.svg" class="name"></md-icon>
+                                    <input ng-model="userEdit.apellido_m" type="text">
+                                </md-input-container>
 
-                            <md-input-container class="md-icon-float md-block">
-                                <label>Contraseña</label>
-                                <md-icon md-svg-src="../imgs/icos/user.svg" class="name"></md-icon>
-                                <input ng-model="useredit.contra" type="password">
-                            </md-input-container>
-      
+                                <md-input-container class="md-icon-float md-block">
+                                    <label>Correo</label>
+                                    <md-icon md-svg-src="../imgs/icos/user.svg" class="name"></md-icon>
+                                    <input ng-model="userEdit.correo" type="mail">
+                                </md-input-container>
 
-                            <!-- Use floating label instead of placeholder -->
-                            <md-button class="md-raised md-warn" ng-click="useredit=''">Cancelar <md-icon md-svg-src="../imgs/icos/cancelar.svg" class="name"></md-icon></md-button>
-                            <md-button class="md-raised md-primary" ng-click="editUser(useredit)">Guardar <md-icon md-svg-src="../imgs/icos/aceptar.svg" class="name"></md-icon></md-button>
+                                <md-input-container class="md-icon-float md-block">
+                                    <label>Contraseña</label>
+                                    <md-icon md-svg-src="../imgs/icos/user.svg" class="name"></md-icon>
+                                    <input ng-model="userEdit.contrasena" type="password">
+                                </md-input-container>
+
+
+                                <!-- Use floating label instead of placeholder -->
+                                <md-button class="md-raised md-warn" ng-click="userEdit=''">Cancelar <md-icon md-svg-src="../imgs/icos/cancelar.svg" class="name"></md-icon></md-button>
+                                <md-button class="md-raised md-primary" ng-click="editUser(userEdit)">Guardar <md-icon md-svg-src="../imgs/icos/aceptar.svg" class="name"></md-icon></md-button>
+                            </md-content>
                         </md-content>
-                    </md-content>
 
-                </md-tab-body>
-            </md-tab>
-            <md-tab>
-                <md-tab-label>
-                    Encuestas
-                </md-tab-label>
-                <md-tab-body>
+                    </md-tab-body>
+                </md-tab>
+                <md-tab>
+                    <md-tab-label>
+                        Encuestas
+                    </md-tab-label>
+                    <md-tab-body>
 
-                </md-tab-body>
-            </md-tab>
-        </md-tabs>
+                    </md-tab-body>
+                </md-tab>
+            </md-tabs>
+        </div>
     </div>
 </div>

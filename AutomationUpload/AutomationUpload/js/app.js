@@ -12,6 +12,10 @@ app.config(
         }).
         when('/admin',{
             templateUrl: 'views/admin.html',
+            controller:"adminCtrl"
+        }).
+        when('/inicio', {
+            templateUrl:'views/inicio.html'
         })
      .otherwise({
          redirectTo: '/'
@@ -25,17 +29,8 @@ app.config(function ($mdThemingProvider) {
       .warnPalette('red')
     ;
 })
-
-
-app.controller("loginCtrl", ["$scope","$log",function($scope,$log)
-{
-    $scope.user = "";
-    $scope.password = "";
-
-
-}])
-
-app.factory("$session", function () {
+//factoria para guardar y eliminar sesiones con sessionStorage
+app.factory("sesionesControl", function () {
     return {
         //obtenemos una sesión //getter
         get: function (key) {
@@ -46,78 +41,53 @@ app.factory("$session", function () {
             return sessionStorage.setItem(key, val)
         },
         //limpiamos una sesión
-        clear: function (key) {
+        unset: function (key) {
             return sessionStorage.removeItem(key)
         }
     }
 })
 
-
-app.factory('authUsers', function ($http, $location, $session, $mdDialog) {
+app.factory('authUsers', function ($http, $location, sesionesControl, $mdDialog) {
     var cacheSession = function (username) {
-        $session.set("userLogin", true);
-        $session.set("username", username);
+        sesionesControl.set("userLogin", true);
+        sesionesControl.set("username", username);
     }
     var unCacheSession = function () {
-        $session.unset("userLogin");
-        $session.unset("username");
+        sesionesControl.unset("userLogin");
+        sesionesControl.unset("username");
     }
 
     return {
         //retornamos la función login de la factoria authUsers para loguearnos correctamente
         login: function (user) {
-            var url = base_url + 'api/ingreso';
-            return $http.post(url, user).success(function ($response) {
+           
+            username = JSON.stringify({ username: user.username, password: user.password });
+            return $http.post("wsApp.asmx/login", username).success(function ($response) {
 
-                console.log($response);
-
-                if ($response.trim() === "successAd") {
+               
+                if ($response.d.trim() === "admin") {
                     cacheSession(user.username);
                     $location.path('/admin');
                 }
-                else if ($response.trim() === "successA") {
+                else if ($response.d.trim() === "userNormal") {
                     cacheSession(user.username);
-                    $location.path("/alumno");
-                }
-                else if ($response.trim() === "successM") {
-                    cacheSession(user.username);
-                    $location.path("/maestro");
-                }
-                else if ($response.trim() === "successP") {
-                    cacheSession(user.username);
-                    $location.path("/padres");
+                    $location.path("/inicio");
                 }
                 else {
-                    if ($response.trim() === "error_password") {
-                        $mdDialog.show(
-                              $mdDialog.alert()
-                                .clickOutsideToClose(true)
-                                .title('Aviso:')
-                                .content('Contraseña Incorrecta')
-                                .ok('Aceptar')
-                            );
-                        //alert("Contraseña Incorrecta");
-                        //msg2=false;
-                        //$scope.msg=true;
-                    }
-                    else {
-                        //$scope.msg=false;
-                        $mdDialog.show(
-                           $mdDialog.alert()
-                             .clickOutsideToClose(true)
-                             .title('Aviso:')
-                             .content('usuario Icorrecto')
-                             .ok('Aceptar')
-                         );
-
-                    }
+                    $mdDialog.show(
+                          $mdDialog.alert()
+                            .clickOutsideToClose(true)
+                            .title('Aviso:')
+                            .content('Datos Incorrectos')
+                            .ok('Aceptar')
+                        );
                 }
             })
         },
         //función para cerrar la sesión del usuario
         logout: function () {
             return $http({
-                url: "http://techsanher.esy.es"
+                url: "/"
             }).success(function () {
                 //eliminamos la sesión de sessionStorage
                 unCacheSession();
@@ -130,3 +100,80 @@ app.factory('authUsers', function ($http, $location, $session, $mdDialog) {
         }
     }
 })
+
+app.controller("loginCtrl", function ($scope, $log, $location, authUsers,$mdDialog)
+{
+    $scope.login = function (user) {
+        if (user != undefined) {
+            authUsers.login(user);            
+        }
+        else {
+            $mdDialog.show(
+                $mdDialog.alert()
+                    .clickOutsideToClose(true)
+                    .title('Aviso')
+                    .content('Ingresa tus datos')
+                    .ok('Aceptar')
+                )
+        }
+        
+    }
+
+
+})
+
+app.controller("adminCtrl", function ($scope, $http, sesionesControl, authUsers,$location) {
+    $http.post("wsApp.asmx/getUsuarios").success(function ($response) {
+       
+        $scope.usuarios = $response;
+    });
+    $scope.editarUsuario = function (usr) {
+        $scope.userEdit = usr;
+    }
+})
+
+
+
+//mientras corre la aplicación, comprobamos si el usuario tiene acceso a la ruta a la que está accediendo
+//como vemos inyectamos authUsers
+
+app.run(function($rootScope, $location, authUsers){
+
+    //creamos un array con las rutas que queremos controlar
+    var rutasPrivadas = ["/admin"];
+    //al cambiar de rutas
+    $rootScope.$on('$routeChangeStart', function(){
+        //si en el array rutasPrivadas existe $location.path(), locationPath en el login
+        //es /login, en la home /home etc, o el usuario no ha iniciado sesión, lo volvemos 
+        //a dejar en el formulario de login
+        if(in_array($location.path(),rutasPrivadas) && !authUsers.isLoggedIn()){
+            $location.path("/login");
+        }
+        //en el caso de que intente acceder al login y ya haya iniciado sesión lo mandamos a la home
+        if(($location.path() === '/login') && authUsers.isLoggedIn()){
+            $location.path("/inicio");
+        }
+    });
+});
+ 
+//función in_array que usamos para comprobar si el usuario
+//tiene permisos para estar en la ruta actual
+function in_array(needle, haystack, argStrict){
+    var key = '',
+    strict = !! argStrict;
+ 
+    if(strict){
+        for(key in haystack){
+            if(haystack[key] === needle){
+                return true;
+            }
+        }
+    }else{
+        for(key in haystack){
+            if(haystack[key] == needle){
+                return true;
+            }
+        }
+    }
+    return false;
+}
