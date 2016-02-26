@@ -1,1 +1,88 @@
-﻿<h1>Hola Usuario</h1>
+﻿
+<div layout="row" style="padding:1%;">
+    <div flex="20">
+        <md-input-container>
+            <label>Encuesta</label>
+            <md-select ng-model="encuesta">
+                <md-option value="ena">ENA</md-option>
+                <md-option  value="ena2">ENA2</md-option>
+            </md-select>
+        </md-input-container>
+    </div>
+</div>
+<md-divider></md-divider>
+<div layout="row" style="padding:1%;">
+    <div flex="17">
+        <md-toolbar class="md-theme-light">
+            <h2 class="md-toolbar-tools">
+                <span>Menú</span>
+            </h2>
+        </md-toolbar>
+        <md-list ng-cloak class="primary">
+            <md-list-item ng-click="menu='NC'">
+                Nueva Carga
+            </md-list-item>
+            <md-divider></md-divider>
+            <md-list-item ng-click="menu='VI'">
+                Visualizador
+            </md-list-item>
+            <md-divider></md-divider>
+            <md-list-item ng-click="menu='CA'">
+                Consultar carga anterior
+            </md-list-item>
+            <md-divider></md-divider>
+            <md-list-item ng-click="menu='CvE'">
+                Validar carga vs Excel
+            </md-list-item>
+            <md-divider></md-divider>
+            <md-list-item ng-click="menu='CvV'">
+                Validar carga vs Vista
+            </md-list-item>
+            <md-divider></md-divider>
+        </md-list>
+    </div>
+    <div id="CA" ng-show="menu=='CA'">
+        <div flex>
+            <div layout="row" style="padding:1%;">
+                <div flex="20">
+                    <md-input-container>
+                        <label>Versión</label>
+                        <md-select ng-model="version">
+                            <md-option value="1.0">V1.0</md-option>
+                            <md-option value="1.1">V1.1</md-option>
+                        </md-select>
+                    </md-input-container>
+                </div>
+            </div>
+            <md-divider></md-divider>
+            <div layout="row" style="padding:1%;" id="CA">
+                <div flex="40">
+                    <h3>Configuración de la vista:</h3>
+                </div>
+                <div flex>
+                    <h3>Información</h3>
+                    <div layout="row">
+                        <div flex>
+                            <h4>Título</h4>
+                            <p>Actualización de Enero</p>
+                            <md-divider></md-divider>
+                            <h4>Descripción</h4>
+                            <p>Actualización de Enero sdfghjertyudfghjfghj</p>
+                        </div>
+                        <div flex>
+                            <h4>Responsable de esta version</h4>
+                            <p>Luis Ernesto Torres Herrera</p>
+                            <md-divider></md-divider>
+                            <h4>Estatus de la versión</h4>
+                            <p class="warn">no esta terminada</p>
+                            <md-divider></md-divider>
+                            <label>archivo de liberación</label>
+                            <input type="file" name="name" value=" " />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
