@@ -80,7 +80,12 @@
                         Encuestas
                     </md-tab-label>
                     <md-tab-body>
-
+                        <md-list ng-cloak>
+                            <md-list-item ng-repeat="f in fuentes track by $index">
+                                <p> {{f.nombre}} </p>
+                                <md-checkbox class="md-secondary" ng-checked="checar(f,userEdit)"></md-checkbox>
+                            </md-list-item>
+                        </md-list>
                     </md-tab-body>
                 </md-tab>
             </md-tabs>

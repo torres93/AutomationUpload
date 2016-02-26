@@ -56,6 +56,22 @@ namespace AutomationUpload
             }
         }
 
+        public SqlDataReader ExecuteCommand(string cmdtext, CommandType cmdtype)
+        {
+            try
+            {
+                cmd = PrepareCommand(cmdtext, cmdtype);
+                rdr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+                cmd.Dispose();
+                return rdr;
+
+            }
+            catch
+            {
+                return rdr;
+            }
+        }
+
 
     }
 }
