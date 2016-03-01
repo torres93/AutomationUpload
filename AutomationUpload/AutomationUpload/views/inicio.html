@@ -3,9 +3,8 @@
     <div flex="20">
         <md-input-container>
             <label>Encuesta</label>
-            <md-select ng-model="encuesta">
-                <md-option value="ena">ENA</md-option>
-                <md-option  value="ena2">ENA2</md-option>
+            <md-select ng-model="encuesta" ng-change="configVista(encuesta)">
+                <md-option ng-repeat="e in encuestas track by $index">{{e.nombre}}</md-option>
             </md-select>
         </md-input-container>
     </div>
@@ -57,9 +56,18 @@
             <md-divider></md-divider>
             <div layout="row" style="padding:1%;" id="CA">
                 <div flex="40">
+                    <span>{{selected | json}}</span>
                     <h3>Configuración de la vista:</h3>
-                </div>
-                <div flex>
+                    <md-content flex layout-padding style="height:300px; padding-left:2%;">
+                        <md-list ng-cloak>
+                            <md-list-item ng-repeat="c in campos track by $index" ng-click="toggle(c, selected)">
+                                <p> {{c.nombre}} </p>
+                                <md-checkbox class="md-secondary" ng-checked="exist(c,selected)"></md-checkbox>
+                            </md-list-item>
+                        </md-list>
+                        </md-content>
+                    </div>
+                <div flex style="padding-left:3%;">
                     <h3>Información</h3>
                     <div layout="row">
                         <div flex>

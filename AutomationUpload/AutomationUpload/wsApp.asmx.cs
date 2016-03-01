@@ -108,6 +108,79 @@ namespace AutomationUpload
         }
 
         [WebMethod]
+        public void getEncuestas()
+        {
+            try
+            {
+                cnx = new cnx();
+                rdr = cnx.ExecuteCommand("SELECT * FROM TI_FUENTE", CommandType.Text);
+
+
+                List<fuentes> list = new List<fuentes>();
+                if (rdr.HasRows)
+                {
+                    while (rdr.Read())
+                    {
+                        fuentes f = new fuentes()
+                        {
+                            nombre = rdr["NOMBRE"].ToString(),
+                            id_fuente = rdr["ID_FUENTE"].ToString(),
+                            id_modelo = rdr["ID_MODELO"].ToString(),
+                        };
+                        list.Add(f);
+                    }
+                    rdr.Close();
+                    rdr = null;
+                    string data = JsonConvert.SerializeObject(list);
+                    Context.Response.Write(data);
+                    //return data;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
+        [WebMethod]
+        public string getCampos(string model)
+        {
+            try
+            {
+                cnx = new cnx();
+                SqlParameter[] parameters = new SqlParameter[1];
+                parameters[0] = new SqlParameter() { ParameterName = "@modelo", Value = model };
+                rdr = cnx.ExecuteCommand("SELECT tc.ID_CAMPO,NOMBRE from TC_CAMPO tc INNER JOIN TR_TABLA tr ON tc.ID_CAMPO=tr.ID_CAMPO and tr.ID_MODELO=@modelo", CommandType.Text, parameters);
+
+                List<campo> list = new List<campo>();
+                if (rdr.HasRows)
+                {
+                    while (rdr.Read())
+                    {
+                        campo c = new campo()
+                        {
+                            nombre = rdr["NOMBRE"].ToString(),
+                            id_campo = rdr["ID_CAMPO"].ToString()
+                        };
+                        list.Add(c);
+                    }
+                    rdr.Close();
+                    rdr = null;
+                    string data = JsonConvert.SerializeObject(list);
+                    //Context.Response.Write(data);
+                    return data;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            return "";
+        }
+
+        [WebMethod]
         public void getUsuarios() {
             try
             {
@@ -159,6 +232,8 @@ namespace AutomationUpload
             }
 
         }
+
+
     }
 }
 
@@ -187,4 +262,15 @@ public class fuente
     public string id { set; get; }
     public string id_modelo { set; get; }
 
+}
+//encuestas
+public class fuentes {
+    public string nombre { set; get; }
+    public string id_fuente { set; get; }
+    public string id_modelo { set; get; }
+}
+
+public class campo {
+    public string id_campo { set; get; }
+    public string nombre { set; get; }
 }

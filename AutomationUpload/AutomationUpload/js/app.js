@@ -15,7 +15,8 @@ app.config(
             controller: "adminCtrl"
         }).
         when('/inicio', {
-            templateUrl: 'views/inicio.html'
+            templateUrl: 'views/inicio.html',
+            controller:"userCtrl"
         })
      .otherwise({
          redirectTo: '/'
@@ -119,6 +120,34 @@ app.controller("loginCtrl", function ($scope, $log, $location, authUsers, $mdDia
     }
 
 
+})
+
+app.controller("userCtrl", function ($scope, $http, authUsers, sesionesControl) {
+    $http.post("wsApp.asmx/getEncuestas").success(function ($response) {
+        console.log($response);
+        $scope.encuestas = $response;
+    });
+    $scope.configVista = function (encuesta) {
+       
+        for (var i = 0; i < $scope.encuestas.length; i++) {
+            if ($scope.encuestas[i].nombre == encuesta) {
+                modelo = $scope.encuestas[i].id_modelo;
+            }
+        };
+        modeloJson = JSON.stringify({ model: modelo });
+        $http.post("wsApp.asmx/getCampos", modeloJson).success(function ($response) {
+                $scope.campos = JSON.parse($response.d);    
+        });
+    }
+    $scope.selected = [];
+    $scope.toggle = function (campos, list) {
+        var idx = list.indexOf(campos.nombre);
+        if (idx > -1) list.splice(idx, 1);
+        else list.push(campos.nombre);
+    };
+    $scope.exist = function (campos, list) {
+        return list.indexOf(campos.nombre) > -1;
+    }
 })
 
 app.controller("adminCtrl", function ($scope, $http, sesionesControl, authUsers, $location) {
