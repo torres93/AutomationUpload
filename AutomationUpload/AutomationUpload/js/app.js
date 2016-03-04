@@ -150,37 +150,92 @@ app.controller("userCtrl", function ($scope, $http, authUsers, sesionesControl) 
     }
 })
 
-app.controller("adminCtrl", function ($scope, $http, sesionesControl, authUsers, $location) {
+app.controller("adminCtrl", function ($scope, $http, sesionesControl, authUsers, $location, $mdDialog) {
+    $scope.addUser = "normal";
     $http.post("wsApp.asmx/getUsuarios").success(function ($response) {
         $scope.usuarios = $response;
     });
     $http.post("wsApp.asmx/getFuentes").success(function ($response) {
         $scope.fuentes = $response;
     });
+    $scope.selected = [];
     $scope.editarUsuario = function (usr) {
         $scope.userEdit = usr;
+        console.log(usr.fuentes);
+        $scope.selected = usr.fuentes;
+
     }
-    $scope.checar = function (f, u) {
-        if (typeof u != "undefined") {
-            if (typeof u.fuentes == "undefined") {
-                f.checked = false;
-                return false;
+
+    
+    $scope.toggle = function (fuentes, list) {
+        var aux = "";
+        var cont = 0;
+        if (list.length > 0) {
+            for (var i = 0; i < list.length; i++) {
+                if (list[i].nombre == fuentes.nombre) {
+                    console.log(list[i].nombre + " " + fuentes.nombre);
+                    aux = "existe";
+                    cont = i;
+                    
+                }
+            }
+            console.log(aux);
+            console.log(cont);
+            if (aux == "existe") {
+                console.log(cont);
+                list.splice(cont, 1);
             }
             else {
-                for (var i = 0; i < u.fuentes.length; i++) {
-                    if (f.id == u.fuentes[i].id && f.id_modelo == u.fuentes[i].id_modelo) {
-                        f.checked = true;
-                        return true;
-
-                    }
-                }
-                f.checked = false;
-                return false;
+                list.push(fuentes);
             }
         } else {
-            f.checked = false;
-            return false;
+            list.push(fuentes);
         }
+    
+ 
+    };
+    $scope.exist = function (fuentes, list) {
+        var str = JSON.stringify(list);
+        var f = JSON.stringify(fuentes);
+        return str.indexOf(f) > -1;
+    }
+
+    $scope.editUser = function (userEdit) {
+        console.log(userEdit);
+        userEdit.fuentes = $scope.selected;
+
+        $http.post("wsApp.asmx/updateUsuario",userEdit).success(function ($response) {
+            $mdDialog.show(
+                $mdDialog.alert()
+                    .clickOutsideToClose(true)
+                    .title('Aviso')
+                    .content('Cambios guardados')
+                    .ok('Aceptar')
+            )
+            $scope.userEdit = "";
+            $scope.selected = [];
+        });
+
+    }
+    $scope.creaarUsuario = function (userN) {
+        userN.fuentes = $scope.selected;
+        $http.post("wsApp.asmx/createUsuario",userN).success(function ($response) {
+                $mdDialog.show(
+                    $mdDialog.alert()
+                        .clickOutsideToClose(true)
+                        .title('Aviso')
+                        .content('Nuevo usuario creado')
+                        .ok('Aceptar')
+                        
+                )
+            $scope.selected = [];
+            $scope.userN = "";
+            $scope.addUser = "normal";
+            
+            $http.post("wsApp.asmx/getUsuarios").success(function ($response) {
+                $scope.usuarios = $response;
+            });
+        })
     }
 
 })

@@ -79,15 +79,15 @@ namespace AutomationUpload
                 rdr = cnx.ExecuteCommand("SELECT TC_MODELO.ID_MODELO, TC_MODELO.NOMBRE AS MODELO, TI_FUENTE.ID_FUENTE, TI_FUENTE.NOMBRE AS FUENTE FROM TC_MODELO INNER JOIN TI_FUENTE  ON TC_MODELO.ID_MODELO = TI_FUENTE.ID_MODELO ORDER BY TC_MODELO.ID_MODELO, TI_FUENTE.ID_FUENTE", CommandType.Text);
 
 
-                List<fuente> list = new List<fuente>();
+                List<fuenteUsuario> list = new List<fuenteUsuario>();
                 if (rdr.HasRows)
                 {
                     while (rdr.Read())
                     {
-                        fuente f = new fuente()
+                        fuenteUsuario f = new fuenteUsuario()
                         {
                             nombre = rdr["FUENTE"].ToString(),
-                            nombre_modelo = rdr["MODELO"].ToString(),
+                            //nombre_modelo = rdr["MODELO"].ToString(),
                             id = rdr["ID_FUENTE"].ToString(),
                             id_modelo = rdr["ID_MODELO"].ToString(),
                         };
@@ -181,21 +181,122 @@ namespace AutomationUpload
         }
 
         [WebMethod]
+        public string updateUsuario(string id,string nombre, string apellido_p, string apellido_m,string contrasena,string correo, Object[] fuentes)
+        {
+            try
+            {
+                cnx = new cnx();
+                SqlParameter[] parameters = new SqlParameter[6];
+                parameters[0] = new SqlParameter() { ParameterName = "@nombre", Value = nombre };
+                parameters[1] = new SqlParameter() { ParameterName = "@apellido_m", Value = apellido_m };
+                parameters[2] = new SqlParameter() { ParameterName = "@apellido_p", Value = apellido_p };
+                parameters[3] = new SqlParameter() { ParameterName = "@contra", Value = contrasena };
+                parameters[4] = new SqlParameter() { ParameterName = "@correo", Value = correo };
+                parameters[5] = new SqlParameter() { ParameterName = "@id", Value = id };
+                rdr = cnx.ExecuteCommand("UPDATE TC_USUARIO SET NOMBRE=@nombre,APELLIDO_M=@apellido_m,APELLIDO_P=@apellido_p,CORREO=@correo,PASSWORD=@contra WHERE ID_USUARIO=@id ", CommandType.Text, parameters);
+                    string datos=JsonConvert.SerializeObject(fuentes);
+                    SqlDataReader r2;
+                    cnx cnxDel = new cnx();
+                    SqlParameter[] parametro = new SqlParameter[1];
+                    parametro[0] = new SqlParameter() { ParameterName = "@id", Value = id };
+                    r2 = cnxDel.ExecuteCommand("DELETE TI_FUENTE_USUARIO WHERE ID_USUARIO=@id",CommandType.Text,parametro);
+                    var fuentesSelect = JsonConvert.DeserializeObject<List<fuente>>(datos);
+                    for (int i = 0; i < fuentesSelect.Count; i++)
+                    {
+                        SqlDataReader r;
+                        cnx cnxAux=new cnx();
+                        SqlParameter[] param = new SqlParameter[3];
+                        param[0] = new SqlParameter() { ParameterName = "id_modelo", Value = fuentesSelect[i].id_modelo };
+                        param[1] = new SqlParameter() { ParameterName = "id_fuente", Value = fuentesSelect[i].id };
+                        param[2] = new SqlParameter() { ParameterName = "id_usuario", Value = id };
+                        r = cnxAux.ExecuteCommand("INSERT INTO  TI_FUENTE_USUARIO (ID_MODELO,ID_FUENTE,ID_USUARIO) VALUES (@id_modelo,@id_fuente,@id_usuario)", CommandType.Text, param);
+                    }
+                    
+                return "correcto";
+                    
+                    
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+       
+        }
+
+
+        [WebMethod]
+        public string createUsuario(string nombre, string apellido_p, string apellido_m, string contrasena, string correo, Object[] fuentes)
+        {
+            try
+            {
+                cnx = new cnx();
+                cnx cnxAux = new cnx();
+               
+                SqlParameter[] parameters = new SqlParameter[5];
+                parameters[0] = new SqlParameter() { ParameterName = "@nombre", Value = nombre };
+                parameters[1] = new SqlParameter() { ParameterName = "@apellido_m", Value = apellido_m };
+                parameters[2] = new SqlParameter() { ParameterName = "@apellido_p", Value = apellido_p };
+                parameters[3] = new SqlParameter() { ParameterName = "@contra", Value = contrasena };
+                parameters[4] = new SqlParameter() { ParameterName = "@correo", Value = correo };
+                rdr = cnx.ExecuteCommand("INSERT INTO TC_USUARIO (CORREO,ID_PERFIL,NOMBRE,APELLIDO_M,APELLIDO_P,PASSWORD) VALUES(@correo,'2',@nombre,@apellido_m,@apellido_p,@contra)", CommandType.Text, parameters);
+                string datos = JsonConvert.SerializeObject(fuentes);
+                SqlDataReader r2;
+                r2 = cnxAux.ExecuteCommand("SELECT MAX(ID_USUARIO) as ID from TC_USUARIO", CommandType.Text);
+                if (r2!=null)
+                {
+                    while (r2.Read())
+                    {
+                               var fuentesSelect = JsonConvert.DeserializeObject<List<fuente>>(datos);
+                    for (int i = 0; i < fuentesSelect.Count; i++)
+                    {
+                        cnx cnxAux2 = new cnx();
+                        SqlDataReader r;
+                        SqlParameter[] param = new SqlParameter[3];
+                        param[0] = new SqlParameter() { ParameterName = "id_modelo", Value = fuentesSelect[i].id_modelo };
+                        param[1] = new SqlParameter() { ParameterName = "id_fuente", Value = fuentesSelect[i].id };
+                        param[2] = new SqlParameter() { ParameterName = "id_usuario", Value = r2["ID"].ToString() };
+                        r = cnxAux2.ExecuteCommand("INSERT INTO TI_FUENTE_USUARIO (ID_MODELO,ID_FUENTE,ID_USUARIO) VALUES(@id_modelo,@id_fuente,@id_usuario)", CommandType.Text, param);
+                    }
+                    }
+                  
+                    
+                   
+                }
+         
+
+                return "correcto";
+
+
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+        }
+
+
+        [WebMethod]
         public void getUsuarios() {
             try
             {
-                SqlDataReader r;
+                
                 cnx = new cnx();
-                cnx cnxAux = new cnx();
+                
                 List<usuarios> usuariosList = new List<usuarios>();
                 rdr = cnx.ExecuteCommand("SELECT * FROM TC_USUARIO WHERE ID_PERFIL=2",CommandType.Text);
                 if (rdr.HasRows)
                 {
                     while (rdr.Read())
                     {
-                        r = cnxAux.ExecuteCommand("SELECT * FROM TI_FUENTE_USUARIO WHERE CORREO='" + rdr["CORREO"].ToString() + "'", CommandType.Text);
+                        SqlDataReader r;
+                        cnx cnxAux = new cnx();
+                        r = cnxAux.ExecuteCommand("SELECT fu.ID_MODELO,fu.ID_FUENTE,tf.NOMBRE FROM TI_FUENTE_USUARIO fu  inner join TI_fuente tf on fu.ID_FUENTE=tf.ID_FUENTE and fu.ID_MODELO=tf.ID_MODELO and fu.ID_USUARIO='" + rdr["ID_USUARIO"].ToString() + "'", CommandType.Text);
                         usuarios user = new usuarios()
                         {
+                            id=rdr["ID_USUARIO"].ToString(),
                             nombre = rdr["NOMBRE"].ToString(),
                             apellido_p = rdr["APELLIDO_P"].ToString(),
                             apellido_m = rdr["APELLIDO_M"].ToString(),
@@ -204,17 +305,23 @@ namespace AutomationUpload
                             contrasena = rdr["PASSWORD"].ToString()
                         };
 
-                        user.fuentes = new List<fuenteUsuario>();
-                        while (r.Read())
+                        
+                        if (r!=null)
                         {
-                            fuenteUsuario f = new fuenteUsuario()
-                            {
-                                id = r["ID_FUENTE"].ToString(),
-                                id_modelo = r["ID_MODELO"].ToString(),
-                                correo = r["CORREO"].ToString()
-                            };
-                            user.fuentes.Add(f);
+                            user.fuentes = new List<fuenteUsuario>();
+                             while (r.Read())
+                                {
+                                    fuenteUsuario f = new fuenteUsuario()
+                                    {
+                                        id = r["ID_FUENTE"].ToString(),
+                                        id_modelo = r["ID_MODELO"].ToString(),
+                                        nombre=r["NOMBRE"].ToString()
+                                        //id_usuario = r["ID_USUARIO"].ToString()
+                                    };
+                                    user.fuentes.Add(f);
+                                }
                         }
+                       
 
                         usuariosList.Add(user);
                     }
@@ -245,6 +352,7 @@ public class usuarios
     public string correo { set; get; }
     public string fecha_na { set; get; }
     public string contrasena { set; get; }
+    public string id { set; get; }
     public List<fuenteUsuario> fuentes { set; get; }
 
 }
@@ -252,7 +360,8 @@ public class fuenteUsuario
 {
     public string id { set; get; }
     public string id_modelo { set; get; }
-    public string correo { set; get; }
+    //public string id_usuario { set; get; }
+    public string nombre { set; get; }
 
 }
 public class fuente

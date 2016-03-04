@@ -9,6 +9,15 @@
                 <input ng-model="buscar" type="text">
             </md-input-container>
             <md-list>
+                <md-list-item class="md-3-line">
+                    <img ng-src="../imgs/icos/user.svg" class="md-avatar" alt="Examen" />
+                    <div class="md-list-item-text" layout="column">
+                    ...
+                    </div>
+                    <md-button class="md-raised md-primary" ng-click="addUser='new';userEdit='';selected=[];">Agregar Usuario</md-button>
+                    <md-divider></md-divider>
+                    <br>
+                </md-list-item>
                 <md-list-item class="md-3-line" ng-repeat="usr in usuarios | filter:buscar track by $index">
                     <img ng-src="../imgs/icos/user.svg" class="md-avatar" alt="Examen" />
                     <div class="md-list-item-text" layout="column">
@@ -26,7 +35,7 @@
         </div>
     </div>
     <div flex>
-        <div style="padding:5%;">
+        <div style="padding:5%;" ng-show="addUser=='normal'">
             <h1>Información del usuario</h1>
             <md-tabs md-dynamic-height md-border-bottom>
                 <md-tab>
@@ -81,9 +90,81 @@
                     </md-tab-label>
                     <md-tab-body>
                         <md-list ng-cloak>
-                            <md-list-item ng-repeat="f in fuentes track by $index">
+                            <md-list-item ng-repeat="f in fuentes track by $index" ng-click="toggle(f, selected)">
                                 <p> {{f.nombre}} </p>
-                                <md-checkbox class="md-secondary" ng-checked="checar(f,userEdit)"></md-checkbox>
+                                <md-checkbox class="md-secondary" ng-checked="exist(f,selected)"></md-checkbox>
+                            </md-list-item>
+                        </md-list>
+                    </md-tab-body>
+                </md-tab>
+            </md-tabs>
+        </div>
+        <div style="padding: 5%; background: rgb(0, 188, 212); color:white;" ng-show="addUser=='new'">
+            <h1>Crear nuevo usuario</h1>
+            <md-tabs md-dynamic-height md-border-bottom>
+                <md-tab>
+                    <md-tab-label>
+                        Inf. Personal
+                    </md-tab-label>
+                    <md-tab-body>
+                        <md-content class="md-padding">
+                            <form name="newUser">
+                                <md-content class="md-padding" id="editarUser">
+                                    <md-input-container class="md-icon-float md-block">
+                                        <label>Nombre</label>
+                                        <md-icon md-svg-src="../imgs/icos/user.svg" class="name"></md-icon>
+                                        <input ng-model="userN.nombre" name="nombre" required type="text">
+                                        <div ng-messages="newUser.nombre.$error"><div ng-message="required">!nombre Requerido¡</div></div>
+                                    </md-input-container>
+                                   
+                                    <md-input-container class="md-icon-float md-block">
+                                        <label>Apellido Paterno</label>
+                                        <md-icon md-svg-src="../imgs/icos/user.svg" class="name"></md-icon>
+                                        <input ng-model="userN.apellido_p" name="ape_p" required type="text">
+                                        <div ng-messages="newUser.ape_p.$error"><div ng-message="required">!Apellido Requerido¡</div></div>
+                                    </md-input-container>
+
+                                    <md-input-container class="md-icon-float md-block">
+                                        <label>Apellido Materno</label>
+                                        <md-icon md-svg-src="../imgs/icos/user.svg" class="name"></md-icon>
+                                        <input ng-model="userN.apellido_m" name="ape_m" required type="text">
+                                        <div ng-messages="newUser.ape_m.$error"><div ng-message="required">!Apellido Requerido¡</div></div>
+                                    </md-input-container>
+
+                                    <md-input-container class="md-icon-float md-block">
+                                        <label>Correo</label>
+                                        <md-icon md-svg-src="../imgs/icos/user.svg" class="name"></md-icon>
+                                        <input ng-model="userN.correo" name="correo" required type="mail">
+                                        <div ng-messages="newUser.correo.$error"><div ng-message="required">!Correo Requerido¡</div></div>
+                                    </md-input-container>
+
+                                    <md-input-container class="md-icon-float md-block">
+                                        <label>Contraseña</label>
+                                        <md-icon md-svg-src="../imgs/icos/user.svg" class="name"></md-icon>
+                                        <input ng-model="userN.contrasena" name="pass" required type="password">
+                                        <div ng-messages="newUser.pass.$error"><div ng-message="required">!Contraseña Requerida¡</div></div>
+                                    </md-input-container>
+
+
+                                    <!-- Use floating label instead of placeholder -->
+                                    <md-button class="md-raised md-warn" ng-click="userN='';addUser='normal';selected=[]">Cancelar <md-icon md-svg-src="../imgs/icos/cancelar.svg" class="name"></md-icon></md-button>
+                                    <md-button class="md-raised md-primary" ng-click="creaarUsuario(userN)" ng-disabled="selected.length==0 ">Guardar <md-icon md-svg-src="../imgs/icos/aceptar.svg" class="name"></md-icon></md-button>
+                            </form>
+                            </md-content>
+                        </md-content>
+
+                    </md-tab-body>
+                </md-tab>
+                <md-tab>
+                    <md-tab-label>
+                        Encuestas
+                    </md-tab-label>
+                    <md-tab-body>
+                        <md-list ng-cloak>
+
+                            <md-list-item ng-repeat="f in fuentes track by $index" ng-click="toggle(f, selected)">
+                                <p> {{f.nombre}} </p>
+                                <md-checkbox class="md-secondary" ng-checked="exist(f,selected)"></md-checkbox>
                             </md-list-item>
                         </md-list>
                     </md-tab-body>
