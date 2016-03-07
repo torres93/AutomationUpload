@@ -340,6 +340,189 @@ namespace AutomationUpload
 
         }
 
+        [WebMethod]
+        public int updateModeloCatalogo(string idmodelo, string[] idcatalogos)
+        {
+            try
+            {
+
+                DataTable dt = new DataTable();
+                dt.Columns.Add("ID_MODELO");
+                dt.Columns.Add("ID_CATALOGO");
+
+                for (int i = 0; i < idcatalogos.Length; i++)
+                {
+                    DataRow row = dt.NewRow();
+                    row["ID_MODELO"] = idmodelo;
+                    row["ID_CATALOGO"] = idcatalogos[i];
+
+                    dt.Rows.Add(row);
+                }
+
+
+                cnx = new cnx();
+                SqlParameter[] parameters = new SqlParameter[2]{
+
+                    new SqlParameter {ParameterName="@MODELO",Value=idmodelo},
+                    new SqlParameter {ParameterName="@TABLE",Value=dt,SqlDbType=SqlDbType.Structured}
+                };
+                int rows = cnx.ExecuteTransaction("PR_UPDATE_MODELO_CATALOGO", CommandType.StoredProcedure, parameters);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            return 0;
+        }
+
+
+        [WebMethod]
+        public string getCatalogosModelo(string modelo)
+        {
+            try
+            {
+                cnx = new cnx();
+                SqlParameter[] parameters = new SqlParameter[1];
+                parameters[0] = new SqlParameter() { ParameterName = "@modelo", Value = modelo };
+                rdr = cnx.ExecuteCommand("SELECT ER.ID_CATALOGO,C.NOMBRE from TC_CATALOGO C INNER JOIN TI_ER ER ON C.ID_CATALOGO=ER.ID_CATALOGO WHERE ID_MODELO=@modelo", CommandType.Text, parameters);
+
+                List<catalogo> list = new List<catalogo>();
+                if (rdr.HasRows)
+                {
+                    while (rdr.Read())
+                    {
+                        catalogo c = new catalogo()
+                        {
+                            nombre = rdr["NOMBRE"].ToString(),
+                            id_catalogo = rdr["ID_CATALOGO"].ToString()
+                        };
+                        list.Add(c);
+                    }
+                    rdr.Close();
+                    rdr = null;
+                    string data = JsonConvert.SerializeObject(list);
+                    //Context.Response.Write(data);
+                    return data;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            return "";
+        }
+
+        [WebMethod]
+        public void getCatalogos()
+        {
+            try
+            {
+                cnx = new cnx();
+                rdr = cnx.ExecuteCommand("SELECT ID_CATALOGO,NOMBRE from TC_CATALOGO", CommandType.Text);
+
+                List<catalogo> list = new List<catalogo>();
+                if (rdr.HasRows)
+                {
+                    while (rdr.Read())
+                    {
+                        catalogo c = new catalogo()
+                        {
+                            nombre = rdr["NOMBRE"].ToString(),
+                            id_catalogo = rdr["ID_CATALOGO"].ToString()
+                        };
+                        list.Add(c);
+                    }
+                    rdr.Close();
+                    rdr = null;
+                    string data = JsonConvert.SerializeObject(list);
+                    Context.Response.Write(data);
+                    //return data;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            //return "";
+        }
+
+
+        [WebMethod]
+        public string getFuentesModelo(int modelo)
+        {
+            try
+            {
+                cnx = new cnx();
+                SqlParameter[] parameters = new SqlParameter[1];
+                parameters[0] = new SqlParameter() { ParameterName = "@modelo", Value = modelo };
+
+                rdr = cnx.ExecuteCommand("SELECT * FROM TI_FUENTE WHERE ID_MODELO=@modelo", CommandType.Text, parameters);
+
+
+                List<fuentes> list = new List<fuentes>();
+                if (rdr.HasRows)
+                {
+                    while (rdr.Read())
+                    {
+                        fuentes f = new fuentes()
+                        {
+                            nombre = rdr["NOMBRE"].ToString(),
+                            id_fuente = rdr["ID_FUENTE"].ToString(),
+                            id_modelo = rdr["ID_MODELO"].ToString(),
+                        };
+                        list.Add(f);
+                    }
+                    rdr.Close();
+                    rdr = null;
+                    string data = JsonConvert.SerializeObject(list);
+                    //Context.Response.Write(data);
+
+                    return data;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            return "";
+        }
+        [WebMethod]
+        public void insCampo(string nombre, int catalogo, string modelo, string fuente)
+        {
+            try
+            {
+                cnx = new cnx();
+                SqlParameter[] parameters = new SqlParameter[3];
+                parameters[0] = new SqlParameter() { ParameterName = "@modelo", Value = modelo };
+                parameters[1] = new SqlParameter() { ParameterName = "@nombre", Value = nombre };
+                parameters[2] = new SqlParameter() { ParameterName = "@fuente", Value = fuente };
+                switch (catalogo)
+                {
+                    case 1:
+                        rdr = cnx.ExecuteCommand("INSERT INTO TC_CAMPO (NOMBRE) VALUES (@nombre)", CommandType.Text, parameters);
+                        break;
+                    case 2:
+                        rdr = cnx.ExecuteCommand("INSERT INTO TC_CATALOGO (NOMBRE) VALUES (@nombre)", CommandType.Text, parameters);
+                        break;
+                    case 3:
+                        rdr = cnx.ExecuteCommand("INSERT INTO TI_FUENTE (NOMBRE,ID_MODELO,ID_FUENTE) VALUES (@nombre,@modelo,@fuente)", CommandType.Text, parameters);
+                        break;
+                }
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+        
 
     }
 }
@@ -381,5 +564,15 @@ public class fuentes {
 
 public class campo {
     public string id_campo { set; get; }
+    public string nombre { set; get; }
+}
+public class modelo
+{
+    public string nombre { set; get; }
+    public string id_modelo { set; get; }
+}
+public class catalogo
+{
+    public string id_catalogo { set; get; }
     public string nombre { set; get; }
 }

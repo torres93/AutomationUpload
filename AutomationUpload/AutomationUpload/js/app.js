@@ -17,7 +17,11 @@ app.config(
         when('/inicio', {
             templateUrl: 'views/inicio.html',
             controller:"userCtrl"
-        })
+        }).
+	    when('/modelos', {
+	        templateUrl: 'views/admin_modelos.html',
+	        controller: "adminModelCtrl"
+	    })
      .otherwise({
          redirectTo: '/'
      });

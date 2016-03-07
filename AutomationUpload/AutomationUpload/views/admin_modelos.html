@@ -1,0 +1,111 @@
+﻿
+<div layout="row" style="padding:1%;">
+    <div flex="20">
+        <md-input-container>
+            <label>Modelos</label>
+            <md-select ng-model="modelo">
+                <!--ng-change="configVista(encuesta)"-->
+                <md-option ng-repeat="m in modelos track by $index" ng-click="cambiaModelo(m)">{{m.nombre}}</md-option>
+            </md-select>
+        </md-input-container>
+    </div>
+</div>
+<md-divider></md-divider>
+<div layout="row" style="padding:1%;">
+    <div flex="17">
+        <md-toolbar class="md-theme-light">
+            <h2 class="md-toolbar-tools">
+                <span>Menú</span>
+            </h2>
+        </md-toolbar>
+        <md-list ng-cloak class="primary">
+            <md-list-item ng-click="menu='RCCF'">
+                Registro en Catalogos (Campo/Catalogo/Fuente)
+            </md-list-item>
+            <md-divider></md-divider>
+            <md-list-item ng-click="menu='RMC'">
+                Relación Modelo - Catalogos
+            </md-list-item>
+            <md-divider></md-divider>
+            <md-list-item ng-click="menu='RCC'">
+                Relación Catalogos - Campos
+            </md-list-item>
+            <md-divider></md-divider>
+        </md-list>
+    </div>
+    <div id="RCCF" ng-show="menu=='RCCF'">
+        <div class="row">
+            <div class="col-xs-1"></div>
+            <div class="col-xs-3">
+                <h3>Nuevo Campo</h3>
+                Nombre del campo
+                <input type="text" ng-model="nuevosCatalogo.nombreCampo" />
+            </div>
+            <div class="col-xs-1"></div>
+            <div class="col-xs-3">
+                <h3>Nuevo Catalogo</h3>
+                Nombre del catalogo
+                <input type="text" ng-model="nuevosCatalogo.nombreCatalogo" />
+            </div>
+            <div class="col-xs-1"></div>
+            <div class="col-xs-3">
+                <h3>Nueva Fuente</h3>
+                Id de la Fuente
+                <input type="number" ng-model="nuevosCatalogo.idFuente" min="0" />
+                <p></p>
+                Nombre de la fuentes
+                <input type="text" ng-model="nuevosCatalogo.nombreFuente" />
+            </div>
+        </div>
+        <p></p>
+        <div class="row">
+            <div class="col-xs-1">
+            </div>
+            <div class="col-xs-3">
+                <button ng-click="actualizaAddCatalogo()" class="btn btn-default"> boton</button>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div id="RCCF" ng-show="menu=='RMC'">
+        <div></div>
+        <div class="row">
+            <div class="col-xs-6">
+                <h3>{{modelo}} </h3>
+                <h3>
+                    <small>
+                        Fuentes:
+                        <ul ng-model="fuente">
+                            <li ng-repeat="f in fuentes track by $index">
+                                {{f.nombre}}
+                            </li>
+                        </ul>
+                    </small>
+                </h3>
+
+            </div>
+            <div class="col-xs-6">
+                <h3>Relacion con los Catalogos:</h3>
+                <p></p>
+
+                <md-list ng-cloak>
+                    <md-list-item ng-repeat="c in catalogos track by $index">
+                        <p> {{c.nombre}} </p>
+                        <md-checkbox class="md-secondary" ng-checked="c.selected" ng-click="c.selected=!c.selected"></md-checkbox>
+                    </md-list-item>
+                </md-list>
+            </div>
+        </div>
+        <p></p>
+        <div class="row">
+            <div class="col-xs-1">
+            </div>
+            <div class="col-xs-3">
+                <button ng-click="actualizaTI_ER()" class="btn btn-default" > Guardar Relacion</button>
+            </div>
+        </div>
+    </div>
+</div>

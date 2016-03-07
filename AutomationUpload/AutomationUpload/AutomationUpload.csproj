@@ -64,7 +64,12 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="controllers\adminModelCtrl.js" />
     <Content Include="css\angular-material.min.css" />
+    <Content Include="css\bootstrap-theme.css" />
+    <Content Include="css\bootstrap-theme.min.css" />
+    <Content Include="css\bootstrap.css" />
+    <Content Include="css\bootstrap.min.css" />
     <Content Include="css\ui.css" />
     <Content Include="imgs\icos\aceptar.svg" />
     <Content Include="imgs\icos\buscar.svg" />
@@ -85,6 +90,7 @@
     <Content Include="js\hammer.min.js" />
     <Content Include="js\jquery.min.js" />
     <Content Include="views\admin.html" />
+    <Content Include="views\admin_modelos.html" />
     <Content Include="views\inicio.html" />
     <Content Include="views\login.html" />
     <Content Include="Web.config" />

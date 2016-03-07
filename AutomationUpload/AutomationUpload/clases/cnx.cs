@@ -71,7 +71,23 @@ namespace AutomationUpload
                 return rdr;
             }
         }
+        public int ExecuteTransaction(string cmdtext, CommandType cmdtype, SqlParameter[] paramcollection = null)
+        {
+            int rows = 0;
+            try
+            {
+                cmd = PrepareCommand(cmdtext, cmdtype, paramcollection);
+                rows = cmd.ExecuteNonQuery();
+                conn.Dispose();
+                cmd.Dispose();
+                return rows;
 
+            }
+            catch
+            {
+                return rows;
+            }
+        }
 
     }
 }
