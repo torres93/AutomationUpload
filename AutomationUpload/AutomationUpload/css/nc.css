@@ -1,0 +1,73 @@
+﻿body {
+}
+
+        .btn-file {
+          position: relative;
+          overflow: hidden;
+       }
+       .btn-file input[type=file] {
+          position: absolute;
+          top: 0;
+          right: 0;
+          min-width: 100%;
+          min-height: 100%;
+          font-size: 100px;
+          text-align: right;
+          filter: alpha(opacity=0);
+          opacity: 0;
+          outline: none;
+          background: white;
+          cursor: inherit;
+          display: block;
+      }
+      #fileConsole{
+         margin-top:50px;
+         margin-bottom:20px;
+      }
+      .field-container{
+         padding:20px;
+      }
+      .ribbon
+     {
+        padding:10px;
+        color: #ffffff;
+        background-color:#18b159;
+     }
+      #tablePreview
+     {
+        overflow:auto;
+        max-height:300px;
+        border:1px solid #5cb85c;
+        margin-top:10px;
+        margin-bottom:10px;
+     }
+      .table-xls th
+     {
+        color:#ffffff !important;
+        background-color:#5cb85c;
+     }
+       .table-csv th
+     {
+        color:#ffffff !important;
+        background-color:#c8c8c8;
+     }
+
+      #NC
+      {
+           padding:20px;
+      }
+
+      #NC .row
+      {
+          margin-top:10px;
+          margin-bottom:10px;
+      }
+
+      #tableContainer
+      {
+          overflow-x:scroll;
+          overflow-y:scroll;
+          max-width:1000px;
+          margin:0 auto;
+          max-height:350px;
+      }

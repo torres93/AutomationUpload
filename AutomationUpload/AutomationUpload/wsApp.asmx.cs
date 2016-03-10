@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Services;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Data.OleDb;
 
 namespace AutomationUpload
 {
@@ -108,12 +109,13 @@ namespace AutomationUpload
         }
 
         [WebMethod]
-        public void getEncuestas()
+        public string getEncuestas(string modelo)
         {
+            string m = modelo;
             try
             {
                 cnx = new cnx();
-                rdr = cnx.ExecuteCommand("SELECT * FROM TI_FUENTE", CommandType.Text);
+                rdr = cnx.ExecuteCommand("SELECT * FROM TI_FUENTE WHERE ID_MODELO ="+m, CommandType.Text);
 
 
                 List<fuentes> list = new List<fuentes>();
@@ -132,6 +134,44 @@ namespace AutomationUpload
                     rdr.Close();
                     rdr = null;
                     string data = JsonConvert.SerializeObject(list);
+      
+                      //Context.Response.Write(data);
+                    return data;
+                }
+                return "";
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
+
+        [WebMethod]
+        public void getModelos()
+        {
+            try
+            {
+                cnx = new cnx();
+                rdr = cnx.ExecuteCommand("SELECT * FROM TC_MODELO", CommandType.Text);
+
+
+                List<modelo> list = new List<modelo>();
+                if (rdr.HasRows)
+                {
+                    while (rdr.Read())
+                    {
+                        modelo f = new modelo()
+                        {
+                            id_modelo = rdr["ID_MODELO"].ToString(),
+                            nombre = rdr["NOMBRE"].ToString()
+                        };
+                        list.Add(f);
+                    }
+                    rdr.Close();
+                    rdr = null;
+                    string data = JsonConvert.SerializeObject(list);
                     Context.Response.Write(data);
                     //return data;
                 }
@@ -142,6 +182,8 @@ namespace AutomationUpload
                 throw ex;
             }
         }
+
+
 
         [WebMethod]
         public string getCampos(string model)
@@ -224,6 +266,78 @@ namespace AutomationUpload
        
         }
 
+        [WebMethod]
+        public string getTable(string file)
+        {
+            string init="";
+            if (file != "")
+            {
+                try
+                {
+                    OleDbConnectionStringBuilder csb = new OleDbConnectionStringBuilder();
+                    csb["Provider"] = "Microsoft.ACE.OLEDB.12.0";
+                    csb["Data Source"] = file;
+                    csb["Extended Properties"] = "Excel 12.0 Xml";
+
+                    using (OleDbConnection con = new System.Data.OleDb.OleDbConnection(csb.ToString()))
+                    {
+                        con.Open();
+
+                        using(OleDbCommand olecmd = new OleDbCommand("SELECT * FROM [Hoja1$]", con))
+                        {
+                            OleDbDataReader rdr = olecmd.ExecuteReader();
+                            int columns = rdr.FieldCount;
+                             init = "[";
+                            if(rdr.HasRows)
+                            {
+
+                                init += "{" + '"' + "data" + '"' + ":[";
+                                for (int i = 0; i < columns; i++)
+                                {
+                                    init += '"' + rdr.GetName(i).ToString() + '"';
+                                    if (i != columns - 1)
+                                    {
+                                        init += ",";
+                                    }
+                                }
+                                init += "]},";
+
+
+                                while(rdr.Read())
+                                {
+                                    init += "{"+'"'+"data"+'"'+":[";
+                                    for(int i = 0 ;i<columns;i++)
+                                    {
+                                        init += '"' + rdr[i].ToString() + '"';
+                                        if(i != columns-1)
+                                        {
+                                            init += ",";
+                                        }
+                                    }
+                                    init += "]},";
+                                }
+                            }
+                            init = init.Substring(0, init.Length - 1);
+                            rdr.Close();
+                            rdr.Dispose();
+                            init+="]";
+                        }
+
+                    }
+
+                    return init;
+                }
+                catch (Exception ex)
+                {
+                    return init;
+                }
+
+            }
+            else
+            {
+                return init;
+            }
+        }
 
         [WebMethod]
         public string createUsuario(string nombre, string apellido_p, string apellido_m, string contrasena, string correo, Object[] fuentes)
@@ -276,6 +390,56 @@ namespace AutomationUpload
             }
 
         }
+
+
+        [WebMethod]
+        public string getWorkTable(string id_modelo)
+        {
+            try
+            {
+
+                cnx = new cnx();
+
+                List<campo> list = new List<campo>();
+                rdr = cnx.ExecuteCommand("SELECT * FROM TI_ER WHERE ID_MODELO =  "+id_modelo+" AND TABLA_DE_TRABAJO = 'true'", CommandType.Text);
+                if (rdr.HasRows)
+                {
+                    while (rdr.Read())
+                    {
+                        SqlDataReader r;
+                        cnx cnxAux = new cnx();
+                        r = cnxAux.ExecuteCommand("SELECT * FROM TR_TABLA WHERE ID_MODELO =" + id_modelo + " AND ID_CATALOGO = " + rdr["ID_CATALOGO"].ToString(), CommandType.Text);
+                        if(r.HasRows)
+                        {
+                            while(r.Read())
+                            {
+                                campo f = new campo()
+                                {
+                                    id_campo = rdr["ID_CAMPO"].ToString(),
+                                    tipo = rdr["TIPO"].ToString(),
+                                    nombre = rdr["DESCRIPCION"].ToString()
+                                };
+                                list.Add(f);
+                            }
+                        }
+                        r.Close();
+                        r.Dispose();
+                    }
+                    rdr.Close();
+                    rdr.Dispose();
+                    string data = JsonConvert.SerializeObject(list);
+                    return data;
+                    //return data;
+                }
+            }
+            catch (Exception ex)
+            {               
+                throw ex;
+            }
+            return "";
+        }
+
+
 
 
         [WebMethod]
@@ -565,6 +729,7 @@ public class fuentes {
 public class campo {
     public string id_campo { set; get; }
     public string nombre { set; get; }
+    public string tipo { set; get; }
 }
 public class modelo
 {
@@ -576,3 +741,4 @@ public class catalogo
     public string id_catalogo { set; get; }
     public string nombre { set; get; }
 }
+

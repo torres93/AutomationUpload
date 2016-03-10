@@ -21,6 +21,12 @@ namespace AutomationUpload
             conn.Open();
         }
 
+        public cnx(string connectionname)
+        {
+            conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connectionname].ToString());
+            conn.Open();
+        }
+
         private SqlCommand PrepareCommand(string cmdtext, CommandType cmdtype, SqlParameter[] paramcollection = null)
         {
             cmd = new SqlCommand(cmdtext);

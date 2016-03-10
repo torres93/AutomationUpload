@@ -64,12 +64,16 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="controllers\adminCtrl.js" />
     <Content Include="controllers\adminModelCtrl.js" />
+    <Content Include="controllers\loginCtrl.js" />
+    <Content Include="controllers\NCCtrl.js" />
     <Content Include="css\angular-material.min.css" />
     <Content Include="css\bootstrap-theme.css" />
     <Content Include="css\bootstrap-theme.min.css" />
     <Content Include="css\bootstrap.css" />
     <Content Include="css\bootstrap.min.css" />
+    <Content Include="css\nc.css" />
     <Content Include="css\ui.css" />
     <Content Include="imgs\icos\aceptar.svg" />
     <Content Include="imgs\icos\buscar.svg" />
@@ -93,7 +97,9 @@
     <Content Include="views\admin_modelos.html" />
     <Content Include="views\inicio.html" />
     <Content Include="views\login.html" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="wsApp.asmx" />
   </ItemGroup>
   <ItemGroup>
@@ -112,7 +118,13 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="directives\" />
+    <Folder Include="services\" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
