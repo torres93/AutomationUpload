@@ -68,6 +68,7 @@
     <Content Include="controllers\adminModelCtrl.js" />
     <Content Include="controllers\loginCtrl.js" />
     <Content Include="controllers\NCCtrl.js" />
+    <Content Include="controllers\NCVControl.js" />
     <Content Include="css\angular-material.min.css" />
     <Content Include="css\bootstrap-theme.css" />
     <Content Include="css\bootstrap-theme.min.css" />
