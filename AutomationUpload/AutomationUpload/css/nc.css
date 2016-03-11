@@ -1,11 +1,39 @@
 ﻿body {
 }
+
+.table-au table
+{
+    border:1px solid #8a8a8a;
+    border-radius:5px;
+}
+
+.table-au td
+{
+    border:1px solid #8a8a8a;
+}
+.table-au th
+{
+    border:1px solid #8a8a8a;
+}
+
+.alert
+{
+   margin:10px;
+   background-color:#ed2525;
+   -webkit-box-shadow: 9px 7px 5px 3px rgba(0,0,0,0.18);
+   -moz-box-shadow: 9px 7px 5px 3px rgba(0,0,0,0.18);
+   box-shadow: 9px 7px 5px 3px rgba(0,0,0,0.18);
+   color:white;
+   width:100%;
+}
 .btn-au-primary
 {
     background-color:rgb(63,81,181);
-    border-radius:3px;
+    border-bottom-left-radius:5px;
+    border-top-left-radius:5px;
     color:#fff;
     padding:10px;
+    border:none;
 }
 
 

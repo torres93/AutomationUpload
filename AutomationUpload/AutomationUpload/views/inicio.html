@@ -108,36 +108,56 @@
     <div id="NC" ng-show="menu=='NC'" ng-controller="NCCtrl" style="width:100%;">
         <div>
             <div layout="row">
-                <div flex="20">
+                <div flex="10">
                     <span class="btn-file btn-au-primary">
                         Buscar Archivo
                         <input type="file" id="fileSearch" class="form-control" onchange="angular.element(this).scope().NotePath()" ng-model="filePath" placeholder="" ng-model="path" />
                     </span>
                 </div>
-                <div flex="80">
+                <div flex="90">
                     <input type="text" id="filepath" name="name" ng-model="path" style="width:100%;" />
+                </div>
+            </div>
+            <div layout="row">
+                <div class="alert">
+                    <strong>Error: </strong>Por favor ingrese una direccion valida
+                </div>
+            </div>
+            <div layout="row">
+                <div class="text-center" flex="100">
+                    <button type="button" class="btn-au-primary" ng-click="fnBringTable()">Vista previa</button>
                 </div>
             </div>
 
             <div layout="row">
-                <div class="alert alert-danger" ng-show="path==''"><strong>Error: </strong>Por favor ingrese una direccion valida</div>
+                <div  flex="100">
+                    <div id="tableContainer" class="row text-center" hidden>
+                        <table class="table-au">
+                            <tr ng-repeat="x in data track by $index">
+                                <td ng-repeat="i in x.data track by $index">{{i}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div layout="row">
+                <div class="text-center" flex="100">
+                    <button type="button" class="btn-au-primary" ng-click="fnValidate()">Validar</button>
+                </div>
+            </div>
+            <!--<div layout="row">
+                <div class="alert alert-danger" ng-show="path==''"></div>
 
                 <div class="row text-center">
                     <button type="button" class="btn btn-primary" ng-click="fnBringTable()">Vista previa</button>
                 </div>
 
-                <div id="tableContainer" class="row text-center" hidden>
-                    <table class="table table-bordered table-hover table-responsive">
-                        <tr ng-repeat="x in data track by $index">
-                            <td ng-repeat="i in x.data track by $index">{{i}}</td>
-                        </tr>
-                    </table>
-                </div>
+                
 
                 <div class="row text-center">
                     <button type="button" class="btn btn-primary" ng-click="fnValidate()">Validar</button>
                 </div>
-            </div>
+            </div>-->
           
 
         </div>
