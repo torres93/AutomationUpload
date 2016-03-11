@@ -1,5 +1,20 @@
 ﻿body {
 }
+.btn-au-primary
+{
+    background-color:rgb(63,81,181);
+    border-radius:3px;
+    color:#fff;
+    padding:20px;
+}
+
+.btn-au-primary
+{
+    background-color:rgb(63,81,181);
+    border-radius:3px;
+    color:#fff;
+    padding:20px;
+}
 
         .btn-file {
           position: relative;
@@ -16,9 +31,10 @@
           filter: alpha(opacity=0);
           opacity: 0;
           outline: none;
-          background: white;
+          background-color:transparent;
           cursor: inherit;
           display: block;
+          cursor:pointer;
       }
       #fileConsole{
          margin-top:50px;
