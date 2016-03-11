@@ -47,7 +47,6 @@
           right: 0;
           min-width: 100%;
           min-height: 100%;
-          font-size: 100px;
           text-align: right;
           filter: alpha(opacity=0);
           opacity: 0;
@@ -56,6 +55,7 @@
           cursor: inherit;
           display: block;
           cursor:pointer;
+          overflow:hidden;
       }
       #fileConsole{
          margin-top:50px;
