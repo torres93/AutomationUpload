@@ -30,6 +30,10 @@
                 Nueva Carga
             </md-list-item>
             <md-divider></md-divider>
+            <md-list-item ng-click="menu='NCV'">
+                Nueva Carga Vista
+            </md-list-item>
+            <md-divider></md-divider>
             <md-list-item ng-click="menu='VI'">
                 Visualizador
             </md-list-item>
@@ -109,7 +113,7 @@
                         <span class="glyphicon glyphicon-search"></span> Buscar Archivo <input type="file" id="fileSearch" onchange="angular.element(this).scope().NotePath()" ng-model="filePath" />
                     </span>
                 </span>
-                <input id="filepath" type="text" class="form-control" placeholder="" ng-model="path"/>
+                <input id="filepath" type="text" class="form-control" placeholder="" ng-model="path" />
             </div>
             <div class="alert alert-danger" ng-show="path==''"><strong>Error: </strong>Por favor ingrese una direccion valida</div>
 
@@ -118,7 +122,40 @@
             </div>
 
             <div id="tableContainer" class="row text-center" hidden>
-                <table  class="table table-bordered table-hover table-responsive">
+                <table class="table table-bordered table-hover table-responsive">
+                    <tr ng-repeat="x in data track by $index">
+                        <td ng-repeat="i in x.data track by $index">{{i}}</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="row text-center">
+                <button type="button" class="btn btn-primary" ng-click="fnValidate()">Validar</button>
+            </div>
+
+        </div>
+    </div>
+
+
+
+    <div id="NC" ng-show="menu=='NCV'" ng-controller="NCVCtrl">
+        <div>
+            <div class="input-group" flex>
+                <span class="input-group-btn">
+                    <span class="btn btn-primary btn-file">
+                        <span class="glyphicon glyphicon-search"></span> Buscar Archivo <input type="file" id="fileSearch" onchange="angular.element(this).scope().NotePath()" ng-model="filePath" />
+                    </span>
+                </span>
+                <input id="filepath" type="text" class="form-control" placeholder="" ng-model="path" />
+            </div>
+            <div class="alert alert-danger" ng-show="path==''"><strong>Error: </strong>Por favor ingrese una direccion valida</div>
+
+            <div class="row text-center">
+                <button type="button" class="btn btn-primary" ng-click="fnBringTable()">Vista previa</button>
+            </div>
+
+            <div id="tableContainer" class="row text-center" hidden>
+                <table class="table table-bordered table-hover table-responsive">
                     <tr ng-repeat="x in data track by $index">
                         <td ng-repeat="i in x.data track by $index">{{i}}</td>
                     </tr>
