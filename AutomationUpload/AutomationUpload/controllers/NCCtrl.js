@@ -1,22 +1,6 @@
 ﻿var app = angular.module("AutomationUpload");
 
 
-
-
-
-app.service("$au_validator",function ($http)
-{
-    
-    this.fnValidateLength = function(modelo)
-    {
-        alert("");
-        var m ={id_modelo:modelo}
-        $http.post("wsApp.asmx/getWorkTable",m).success(function ($response) {
-            console.log($response.d);
-        });
-    }
-});
-
 app.controller("userCtrl", function ($scope, $http, authUsers, sesionesControl) {
 
     $http.post("wsApp.asmx/getModelos").success(function ($response) {

@@ -93,6 +93,7 @@
     <Content Include="js\app.js" />
     <Content Include="js\hammer.min.js" />
     <Content Include="js\jquery.min.js" />
+    <Content Include="services\au_validator.js" />
     <Content Include="views\admin.html" />
     <Content Include="views\admin_modelos.html" />
     <Content Include="views\inicio.html" />
@@ -123,7 +124,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="directives\" />
-    <Folder Include="services\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

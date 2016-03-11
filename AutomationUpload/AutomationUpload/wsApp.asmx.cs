@@ -115,7 +115,7 @@ namespace AutomationUpload
             try
             {
                 cnx = new cnx();
-                rdr = cnx.ExecuteCommand("SELECT * FROM TI_FUENTE WHERE ID_MODELO ="+m, CommandType.Text);
+                rdr = cnx.ExecuteCommand("SELECT * FROM TI_FUENTE WHERE ID_MODELO =" + m, CommandType.Text);
 
 
                 List<fuentes> list = new List<fuentes>();
@@ -134,8 +134,8 @@ namespace AutomationUpload
                     rdr.Close();
                     rdr = null;
                     string data = JsonConvert.SerializeObject(list);
-      
-                      //Context.Response.Write(data);
+
+                    //Context.Response.Write(data);
                     return data;
                 }
                 return "";
@@ -223,7 +223,7 @@ namespace AutomationUpload
         }
 
         [WebMethod]
-        public string updateUsuario(string id,string nombre, string apellido_p, string apellido_m,string contrasena,string correo, Object[] fuentes)
+        public string updateUsuario(string id, string nombre, string apellido_p, string apellido_m, string contrasena, string correo, Object[] fuentes)
         {
             try
             {
@@ -236,40 +236,40 @@ namespace AutomationUpload
                 parameters[4] = new SqlParameter() { ParameterName = "@correo", Value = correo };
                 parameters[5] = new SqlParameter() { ParameterName = "@id", Value = id };
                 rdr = cnx.ExecuteCommand("UPDATE TC_USUARIO SET NOMBRE=@nombre,APELLIDO_M=@apellido_m,APELLIDO_P=@apellido_p,CORREO=@correo,PASSWORD=@contra WHERE ID_USUARIO=@id ", CommandType.Text, parameters);
-                    string datos=JsonConvert.SerializeObject(fuentes);
-                    SqlDataReader r2;
-                    cnx cnxDel = new cnx();
-                    SqlParameter[] parametro = new SqlParameter[1];
-                    parametro[0] = new SqlParameter() { ParameterName = "@id", Value = id };
-                    r2 = cnxDel.ExecuteCommand("DELETE TI_FUENTE_USUARIO WHERE ID_USUARIO=@id",CommandType.Text,parametro);
-                    var fuentesSelect = JsonConvert.DeserializeObject<List<fuente>>(datos);
-                    for (int i = 0; i < fuentesSelect.Count; i++)
-                    {
-                        SqlDataReader r;
-                        cnx cnxAux=new cnx();
-                        SqlParameter[] param = new SqlParameter[3];
-                        param[0] = new SqlParameter() { ParameterName = "id_modelo", Value = fuentesSelect[i].id_modelo };
-                        param[1] = new SqlParameter() { ParameterName = "id_fuente", Value = fuentesSelect[i].id };
-                        param[2] = new SqlParameter() { ParameterName = "id_usuario", Value = id };
-                        r = cnxAux.ExecuteCommand("INSERT INTO  TI_FUENTE_USUARIO (ID_MODELO,ID_FUENTE,ID_USUARIO) VALUES (@id_modelo,@id_fuente,@id_usuario)", CommandType.Text, param);
-                    }
-                    
+                string datos = JsonConvert.SerializeObject(fuentes);
+                SqlDataReader r2;
+                cnx cnxDel = new cnx();
+                SqlParameter[] parametro = new SqlParameter[1];
+                parametro[0] = new SqlParameter() { ParameterName = "@id", Value = id };
+                r2 = cnxDel.ExecuteCommand("DELETE TI_FUENTE_USUARIO WHERE ID_USUARIO=@id", CommandType.Text, parametro);
+                var fuentesSelect = JsonConvert.DeserializeObject<List<fuente>>(datos);
+                for (int i = 0; i < fuentesSelect.Count; i++)
+                {
+                    SqlDataReader r;
+                    cnx cnxAux = new cnx();
+                    SqlParameter[] param = new SqlParameter[3];
+                    param[0] = new SqlParameter() { ParameterName = "id_modelo", Value = fuentesSelect[i].id_modelo };
+                    param[1] = new SqlParameter() { ParameterName = "id_fuente", Value = fuentesSelect[i].id };
+                    param[2] = new SqlParameter() { ParameterName = "id_usuario", Value = id };
+                    r = cnxAux.ExecuteCommand("INSERT INTO  TI_FUENTE_USUARIO (ID_MODELO,ID_FUENTE,ID_USUARIO) VALUES (@id_modelo,@id_fuente,@id_usuario)", CommandType.Text, param);
+                }
+
                 return "correcto";
-                    
-                    
+
+
             }
             catch (Exception ex)
             {
 
                 throw ex;
             }
-       
+
         }
 
         [WebMethod]
         public string getTable(string file)
         {
-            string init="";
+            string init = "";
             if (file != "")
             {
                 try
@@ -283,12 +283,12 @@ namespace AutomationUpload
                     {
                         con.Open();
 
-                        using(OleDbCommand olecmd = new OleDbCommand("SELECT * FROM [Hoja1$]", con))
+                        using (OleDbCommand olecmd = new OleDbCommand("SELECT * FROM [Hoja1$]", con))
                         {
                             OleDbDataReader rdr = olecmd.ExecuteReader();
                             int columns = rdr.FieldCount;
-                             init = "[";
-                            if(rdr.HasRows)
+                            init = "[";
+                            if (rdr.HasRows)
                             {
 
                                 init += "{" + '"' + "data" + '"' + ":[";
@@ -303,13 +303,13 @@ namespace AutomationUpload
                                 init += "]},";
 
 
-                                while(rdr.Read())
+                                while (rdr.Read())
                                 {
-                                    init += "{"+'"'+"data"+'"'+":[";
-                                    for(int i = 0 ;i<columns;i++)
+                                    init += "{" + '"' + "data" + '"' + ":[";
+                                    for (int i = 0; i < columns; i++)
                                     {
                                         init += '"' + rdr[i].ToString() + '"';
-                                        if(i != columns-1)
+                                        if (i != columns - 1)
                                         {
                                             init += ",";
                                         }
@@ -320,7 +320,7 @@ namespace AutomationUpload
                             init = init.Substring(0, init.Length - 1);
                             rdr.Close();
                             rdr.Dispose();
-                            init+="]";
+                            init += "]";
                         }
 
                     }
@@ -346,7 +346,7 @@ namespace AutomationUpload
             {
                 cnx = new cnx();
                 cnx cnxAux = new cnx();
-               
+
                 SqlParameter[] parameters = new SqlParameter[5];
                 parameters[0] = new SqlParameter() { ParameterName = "@nombre", Value = nombre };
                 parameters[1] = new SqlParameter() { ParameterName = "@apellido_m", Value = apellido_m };
@@ -357,27 +357,27 @@ namespace AutomationUpload
                 string datos = JsonConvert.SerializeObject(fuentes);
                 SqlDataReader r2;
                 r2 = cnxAux.ExecuteCommand("SELECT MAX(ID_USUARIO) as ID from TC_USUARIO", CommandType.Text);
-                if (r2!=null)
+                if (r2 != null)
                 {
                     while (r2.Read())
                     {
-                               var fuentesSelect = JsonConvert.DeserializeObject<List<fuente>>(datos);
-                    for (int i = 0; i < fuentesSelect.Count; i++)
-                    {
-                        cnx cnxAux2 = new cnx();
-                        SqlDataReader r;
-                        SqlParameter[] param = new SqlParameter[3];
-                        param[0] = new SqlParameter() { ParameterName = "id_modelo", Value = fuentesSelect[i].id_modelo };
-                        param[1] = new SqlParameter() { ParameterName = "id_fuente", Value = fuentesSelect[i].id };
-                        param[2] = new SqlParameter() { ParameterName = "id_usuario", Value = r2["ID"].ToString() };
-                        r = cnxAux2.ExecuteCommand("INSERT INTO TI_FUENTE_USUARIO (ID_MODELO,ID_FUENTE,ID_USUARIO) VALUES(@id_modelo,@id_fuente,@id_usuario)", CommandType.Text, param);
+                        var fuentesSelect = JsonConvert.DeserializeObject<List<fuente>>(datos);
+                        for (int i = 0; i < fuentesSelect.Count; i++)
+                        {
+                            cnx cnxAux2 = new cnx();
+                            SqlDataReader r;
+                            SqlParameter[] param = new SqlParameter[3];
+                            param[0] = new SqlParameter() { ParameterName = "id_modelo", Value = fuentesSelect[i].id_modelo };
+                            param[1] = new SqlParameter() { ParameterName = "id_fuente", Value = fuentesSelect[i].id };
+                            param[2] = new SqlParameter() { ParameterName = "id_usuario", Value = r2["ID"].ToString() };
+                            r = cnxAux2.ExecuteCommand("INSERT INTO TI_FUENTE_USUARIO (ID_MODELO,ID_FUENTE,ID_USUARIO) VALUES(@id_modelo,@id_fuente,@id_usuario)", CommandType.Text, param);
+                        }
                     }
-                    }
-                  
-                    
-                   
+
+
+
                 }
-         
+
 
                 return "correcto";
 
@@ -391,6 +391,189 @@ namespace AutomationUpload
 
         }
 
+        [WebMethod]
+        public void putWorkTable()
+        {
+            DataTable dt = new DataTable();
+            dt.Columns.Add("ID_FUENTE");
+            dt.Columns.Add("ID_VARIABLE_COMPUESTA");
+            dt.Columns.Add("ID_VARIABLE_PADRE");
+            dt.Columns.Add("ID_VARIABLE");
+            dt.Columns.Add("ID_TIPO_DATO");
+            dt.Columns.Add("ID_ACTIVIDAD_COMPUESTA");
+            dt.Columns.Add("ID_ACTIVIDAD_PADRE");
+            dt.Columns.Add("ID_ACTIVIDAD");
+            dt.Columns.Add("ID_TIPO_PERIODICIDAD");
+            dt.Columns.Add("ID_PERIODICIDAD");
+            dt.Columns.Add("ANIO");
+            dt.Columns.Add("ID_ESTATUS");
+            dt.Columns.Add("ID_ENTIDAD");
+            dt.Columns.Add("ID_ESTATUS_CIFRA");
+            dt.Columns.Add("VALOR");
+            dt.Columns.Add("VALOR_PRESENTACION");
+            dt.Columns.Add("FECHA_INSERCION");
+            dt.Columns.Add("REFERENCIA");
+            dt.Columns.Add("VERSION");
+            dt.Columns.Add("IMP");
+            dt.Columns.Add("ANIO_BASE");
+            dt.Columns.Add("DESGLOSE_GEOGRAFICO");
+            dt.Columns.Add("UBICACION_GEOGRAFICA");
+            dt.Columns.Add("PERIODO");
+            dt.Columns.Add("ESTATUS_DE_LA_INFORMACION");
+            dt.Columns.Add("EXCEPCION");
+
+            DataRow row = dt.NewRow();
+
+            row[0] = 3.ToString();
+            row[1] = 1.ToString();
+            row[2] = 2.ToString();
+            row[3] = 2.ToString();
+            row[4] = 3.ToString();
+            row[5] = 0.ToString();
+            row[6] = 0.ToString();
+            row[7] = 0.ToString();
+            row[8] = 1.ToString();
+            row[9] = 1.ToString();
+            row[10] = 2015.ToString();
+            row[11] = 1.ToString();
+            row[12] = 0.ToString();
+            row[13] = 1.ToString();
+            row[14] = 10000.ToString();
+            row[15] = 10001.ToString();
+            row[16] = null;
+            row[17] = 1.ToString();
+            row[18] = 1.1.ToString();
+            row[19] = 1;
+            row[20] = 2015.ToString();
+            row[21] = null;
+            row[22] = null;
+            row[23] = null;
+            row[24] = null;
+            row[25] = null;
+
+            dt.Rows.Add(row);
+
+            DataRow row1 = dt.NewRow();
+
+            row1[0] = 3.ToString();
+            row1[1] = 2.ToString();
+            row1[2] = 2.ToString();
+            row1[3] = 2.ToString();
+            row1[4] = 3.ToString();
+            row1[5] = 0.ToString();
+            row1[6] = 0.ToString();
+            row1[7] = 0.ToString();
+            row1[8] = 1.ToString();
+            row1[9] = 1.ToString();
+            row1[10] = 2015.ToString();
+            row1[11] = 1.ToString();
+            row1[12] = 1.ToString();
+            row1[13] = 1.ToString();
+            row1[14] = 10000.ToString();
+            row1[15] = 10001.ToString();
+            row1[16] = null;
+            row1[17] = 1.ToString();
+            row1[18] = 1.1.ToString();
+            row1[19] = 1;
+            row1[20] = 2015.ToString();
+            row1[21] = null;
+            row1[22] = null;
+            row1[23] = null;
+            row1[24] = null;
+            row1[25] = null;
+            dt.Rows.Add(row1);
+
+
+            DataRow row2 = dt.NewRow();
+
+            row2[0] = 3.ToString();
+            row2[1] = 2.ToString();
+            row2[2] = 2.ToString();
+            row2[3] = 2.ToString();
+            row2[4] = 3.ToString();
+            row2[5] = 0.ToString();
+            row2[6] = 0.ToString();
+            row2[7] = 0.ToString();
+            row2[8] = 1.ToString();
+            row2[9] = 1.ToString();
+            row2[10] = 2015.ToString();
+            row2[11] = 1.ToString();
+            row2[12] = 1.ToString();
+            row2[13] = 1.ToString();
+            row2[14] = 10000.ToString();
+            row2[15] = 10001.ToString();
+            row2[16] = null;
+            row2[17] = 1.ToString();
+            row2[18] = 1.1.ToString();
+            row2[19] = 1;
+            row2[20] = 2015.ToString();
+            row2[21] = null;
+            row2[22] = null;
+            row2[23] = null;
+            row2[24] = null;
+            row2[25] = null;
+            dt.Rows.Add(row2);
+
+            DataTable tabledistinct = new DataTable();
+
+
+            //string[] columns = { "ID_FUENTE", "ID_VARIABLE_COMPUESTA" };
+            //tabledistinct = dt.DefaultView.ToTable(true, new string[] { "ID_FUENTE", "ID_VARIABLE_COMPUESTA" });
+
+
+            DataTable dtclean = new DataTable();
+
+            dtclean = dt.Clone();
+
+            dtclean.Rows.Clear();
+
+            List<string> list = new List<string>();
+            foreach (DataRow irow in dt.Rows)
+            {
+                string key = "";
+                key += irow[0].ToString();
+                key += irow[1].ToString();
+                key += irow[2].ToString();
+
+
+                DataRow xrow = dtclean.NewRow();
+                xrow.ItemArray= ((DataRow)irow).ItemArray;
+                int i = list.IndexOf(key);
+                if(i==-1)
+                {
+                    list.Add(key);
+                    dtclean.Rows.Add(xrow);
+                }
+                
+            }
+
+
+
+            //DataTable dtDistinct = new DataTable();
+
+            
+            try
+            {
+
+  
+                        cnx cnxAux = new cnx("conexion1");
+                        SqlParameter[] _params = new SqlParameter[1]{
+                            new SqlParameter{
+                                ParameterName = "@TABLE",
+                                Value = dtclean,
+                                SqlDbType = SqlDbType.Structured
+                            }
+                        };
+
+
+                       int rows= cnxAux.ExecuteTransaction("PR_TRANSAC_AUTOMATIZACION", CommandType.StoredProcedure,_params);
+               
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
 
         [WebMethod]
         public string getWorkTable(string id_modelo)
@@ -401,7 +584,7 @@ namespace AutomationUpload
                 cnx = new cnx();
 
                 List<campo> list = new List<campo>();
-                rdr = cnx.ExecuteCommand("SELECT * FROM TI_ER WHERE ID_MODELO =  "+id_modelo+" AND TABLA_DE_TRABAJO = 'true'", CommandType.Text);
+                rdr = cnx.ExecuteCommand("SELECT * FROM TI_ER WHERE ID_MODELO =  " + id_modelo + " AND TABLA_DE_TRABAJO = 'true'", CommandType.Text);
                 if (rdr.HasRows)
                 {
                     while (rdr.Read())
@@ -409,9 +592,9 @@ namespace AutomationUpload
                         SqlDataReader r;
                         cnx cnxAux = new cnx();
                         r = cnxAux.ExecuteCommand("SELECT * FROM TR_TABLA WHERE ID_MODELO =" + id_modelo + " AND ID_CATALOGO = " + rdr["ID_CATALOGO"].ToString(), CommandType.Text);
-                        if(r.HasRows)
+                        if (r.HasRows)
                         {
-                            while(r.Read())
+                            while (r.Read())
                             {
                                 campo f = new campo()
                                 {
@@ -433,7 +616,7 @@ namespace AutomationUpload
                 }
             }
             catch (Exception ex)
-            {               
+            {
                 throw ex;
             }
             return "";
@@ -443,14 +626,15 @@ namespace AutomationUpload
 
 
         [WebMethod]
-        public void getUsuarios() {
+        public void getUsuarios()
+        {
             try
             {
-                
+
                 cnx = new cnx();
-                
+
                 List<usuarios> usuariosList = new List<usuarios>();
-                rdr = cnx.ExecuteCommand("SELECT * FROM TC_USUARIO WHERE ID_PERFIL=2",CommandType.Text);
+                rdr = cnx.ExecuteCommand("SELECT * FROM TC_USUARIO WHERE ID_PERFIL=2", CommandType.Text);
                 if (rdr.HasRows)
                 {
                     while (rdr.Read())
@@ -460,7 +644,7 @@ namespace AutomationUpload
                         r = cnxAux.ExecuteCommand("SELECT fu.ID_MODELO,fu.ID_FUENTE,tf.NOMBRE FROM TI_FUENTE_USUARIO fu  inner join TI_fuente tf on fu.ID_FUENTE=tf.ID_FUENTE and fu.ID_MODELO=tf.ID_MODELO and fu.ID_USUARIO='" + rdr["ID_USUARIO"].ToString() + "'", CommandType.Text);
                         usuarios user = new usuarios()
                         {
-                            id=rdr["ID_USUARIO"].ToString(),
+                            id = rdr["ID_USUARIO"].ToString(),
                             nombre = rdr["NOMBRE"].ToString(),
                             apellido_p = rdr["APELLIDO_P"].ToString(),
                             apellido_m = rdr["APELLIDO_M"].ToString(),
@@ -469,23 +653,23 @@ namespace AutomationUpload
                             contrasena = rdr["PASSWORD"].ToString()
                         };
 
-                        
-                        if (r!=null)
+
+                        if (r != null)
                         {
                             user.fuentes = new List<fuenteUsuario>();
-                             while (r.Read())
+                            while (r.Read())
+                            {
+                                fuenteUsuario f = new fuenteUsuario()
                                 {
-                                    fuenteUsuario f = new fuenteUsuario()
-                                    {
-                                        id = r["ID_FUENTE"].ToString(),
-                                        id_modelo = r["ID_MODELO"].ToString(),
-                                        nombre=r["NOMBRE"].ToString()
-                                        //id_usuario = r["ID_USUARIO"].ToString()
-                                    };
-                                    user.fuentes.Add(f);
-                                }
+                                    id = r["ID_FUENTE"].ToString(),
+                                    id_modelo = r["ID_MODELO"].ToString(),
+                                    nombre = r["NOMBRE"].ToString()
+                                    //id_usuario = r["ID_USUARIO"].ToString()
+                                };
+                                user.fuentes.Add(f);
+                            }
                         }
-                       
+
 
                         usuariosList.Add(user);
                     }
@@ -498,7 +682,7 @@ namespace AutomationUpload
             }
             catch (Exception ex)
             {
-                
+
                 throw ex;
             }
 
@@ -686,7 +870,7 @@ namespace AutomationUpload
                 throw ex;
             }
         }
-        
+
 
     }
 }
@@ -720,13 +904,15 @@ public class fuente
 
 }
 //encuestas
-public class fuentes {
+public class fuentes
+{
     public string nombre { set; get; }
     public string id_fuente { set; get; }
     public string id_modelo { set; get; }
 }
 
-public class campo {
+public class campo
+{
     public string id_campo { set; get; }
     public string nombre { set; get; }
     public string tipo { set; get; }
