@@ -19,7 +19,7 @@
 </div>
 <md-divider></md-divider>
 <div layout="row" style="padding:1%;">
-    <div flex="17">
+    <div flex="20">
         <md-toolbar class="md-theme-light">
             <h2 class="md-toolbar-tools">
                 <span>Menú</span>
@@ -108,17 +108,14 @@
     <div id="NC" ng-show="menu=='NC'" ng-controller="NCCtrl" style="width:100%;">
         <div>
             <div layout="row">
-                <div flex="10">
-                    <span class="btn-file btn-au-primary" style="width:100%; height:20px;">
-                        Buscar Archivo
-                       
-                        <input type="file" id="fileSearch" class="form-control" onchange="angular.element(this).scope().NotePath()" ng-model="filePath" placeholder="" ng-model="path" />
-                   
-                        
-                     </span>
-                </div>
-                <div flex="90">
-                    <input type="text" id="filepath" name="name" ng-model="path" style="width:100%;" />
+                <div>
+                    
+                    <input class="ng-hide" id="fileSearch"  type="file" onchange="angular.element(this).scope().NotePath()" ng-model="filePath" placeholder="" />
+                    <label for="fileSearch" class="md-button md-raised md-primary">Buscar Archivo</label>
+                    {{filePath}}
+                </div >
+                <div style="width:100%">
+                    <input type="text" id="filepath" name="name" ng-model="pathShort" style="width:100%; min-height:36px;margin:6px 8px" />
                 </div>
             </div>
             <div layout="row">
@@ -128,7 +125,7 @@
             </div>
             <div layout="row">
                 <div class="text-center" flex="100">
-                    <button type="button" class="btn-au-primary" ng-click="fnBringTable()">Vista previa</button>
+                    <md-button type="button" class="md-raised md-primary" ng-click="fnBringTable()">Vista previa</md-button>
                 </div>
             </div>
 
@@ -145,7 +142,7 @@
             </div>
             <div layout="row">
                 <div class="text-center" flex="100">
-                    <button type="button" class="btn-au-primary" ng-click="fnValidate()">Validar</button>
+                    <md-button type="button" class="md-raised md-primary" ng-click="fnValidate()">Validar</md-button>
                 </div>
             </div>
             <!--<div layout="row">

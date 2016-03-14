@@ -78,9 +78,13 @@ app.controller("NCCtrl", ["$scope","$http","$au_validator", function ($scope,$ht
     };
     $scope.NotePath = function()
     {
+     
         $scope.$apply(function()
         {
-            $scope.path = document.getElementById("filepath").value = document.getElementById("fileSearch").value;
+            fullName = $('#fileSearch').val();
+            shortName = fullName.match(/[^\/\\]+$/);
+            $scope.pathShort= $('#filepath').value = shortName;
+            $scope.path = fullName;
         })
 
     }
