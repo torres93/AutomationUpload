@@ -165,34 +165,32 @@
 
 
 
-    <div id="NC" ng-show="menu=='NCV'" ng-controller="NCVCtrl">
-        <div>
-            <div class="input-group" flex>
-                <span class="input-group-btn">
-                    <span class="btn btn-primary btn-file">
-                        <span class="glyphicon glyphicon-search"></span> Buscar Archivo <input type="file" id="fileSearch" onchange="angular.element(this).scope().NotePath()" ng-model="filePath" />
-                    </span>
-                </span>
-                <input id="filepath" type="text" class="form-control" placeholder="" ng-model="path" />
+    <div id="NCV" ng-show="menu=='NCV'" ng-controller="NCVCtrl">
+        <div layout="row">
+            <div flex="50">
+                <md-input-container>
+                    <label>Catalogos</label>
+                    <md-select ng-model="catalogoV1" ng-change="">
+                        <md-option ng-repeat="c in catalogos track by $index">{{c.nombre}}</md-option>
+                    </md-select>
+                </md-input-container>
             </div>
-            <div class="alert alert-danger" ng-show="path==''"><strong>Error: </strong>Por favor ingrese una direccion valida</div>
-
-            <div class="row text-center">
-                <button type="button" class="btn btn-primary" ng-click="fnBringTable()">Vista previa</button>
+            <div flex="100">
+                <md-input-container>
+                    <label>Tabla trabajo</label>
+                    <md-select ng-model="catalogoV2" >
+                        <md-option ng-if="d.T_trabajo !=''" ng-repeat="d in catalogos ">{{d.T_trabajo}}</md-option>
+                       
+                    </md-select>
+                </md-input-container>
             </div>
-
-            <div id="tableContainer" class="row text-center" hidden>
-                <table class="table table-bordered table-hover table-responsive">
-                    <tr ng-repeat="x in data track by $index">
-                        <td ng-repeat="i in x.data track by $index">{{i}}</td>
-                    </tr>
-                </table>
             </div>
-
-            <div class="row text-center">
-                <button type="button" class="btn btn-primary" ng-click="fnValidate()">Validar</button>
+        <div layout="row">
+            <div layout="row">
+                <div class="text-center" flex="100">
+                    <md-button type="button" class="md-raised md-primary" ng-click="validaVista(catalogoV1,catalogoV2)">Validar</md-button>
+                </div>
             </div>
-
         </div>
     </div>
 </div>

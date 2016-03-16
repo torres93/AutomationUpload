@@ -186,7 +186,7 @@ namespace AutomationUpload
 
 
         [WebMethod]
-        public string getCampos(string model)
+        public string getCampoCatalogo(string model)
         {
             try
             {
@@ -733,17 +733,18 @@ namespace AutomationUpload
                 cnx = new cnx();
                 SqlParameter[] parameters = new SqlParameter[1];
                 parameters[0] = new SqlParameter() { ParameterName = "@modelo", Value = modelo };
-                rdr = cnx.ExecuteCommand("SELECT ER.ID_CATALOGO,C.NOMBRE from TC_CATALOGO C INNER JOIN TI_ER ER ON C.ID_CATALOGO=ER.ID_CATALOGO WHERE ID_MODELO=@modelo", CommandType.Text, parameters);
+                rdr = cnx.ExecuteCommand("select t2.NOMBRE as TABLA_TRABAJO, t1.ID_CATALOGO as ID_CATALOGO, t1.NOMBRE as CATALOGO from(SELECT ER.ID_CATALOGO,C.NOMBRE from TC_CATALOGO C INNER JOIN TI_ER ER ON C.ID_CATALOGO=ER.ID_CATALOGO WHERE ID_MODELO=@modelo)t1 left join (select NOMBRE from TI_ER E INNER JOIN TC_CATALOGO C ON E.ID_CATALOGO=C.ID_CATALOGO WHERE E.ID_MODELO=@modelo AND E.TABLA_DE_TRABAJO=1)t2 on (t2.NOMBRE = t1.NOMBRE)", CommandType.Text, parameters);
 
-                List<catalogo> list = new List<catalogo>();
+                List<catalogos> list = new List<catalogos>();
                 if (rdr.HasRows)
                 {
                     while (rdr.Read())
                     {
-                        catalogo c = new catalogo()
+                        catalogos c = new catalogos()
                         {
-                            nombre = rdr["NOMBRE"].ToString(),
-                            id_catalogo = rdr["ID_CATALOGO"].ToString()
+                            nombre = rdr["CATALOGO"].ToString(),
+                            id_catalogo = rdr["ID_CATALOGO"].ToString(),
+                            T_trabajo = rdr["TABLA_TRABAJO"].ToString()
                         };
                         list.Add(c);
                     }
@@ -870,8 +871,42 @@ namespace AutomationUpload
                 throw ex;
             }
         }
+        
+        [WebMethod]
+        public string validaCargaVista(string vista, string tabla)
+        {
+            try
+            {
+                cnx = new cnx();
 
+                rdr = cnx.ExecuteCommand("SELECT C1.CONT AS CONT, C2.EXISTENTROWS AS EXISTENTROWS FROM (SELECT COUNT(VECES) AS CONT FROM (select COUNT(*) AS VECES from  "+vista+"  group by ID_FUENTE ,ID_VARIABLE_COMPUESTA,ID_VARIABLE,ID_TIPO_DATO,ID_ACTIVIDAD_COMPUESTA,ID_ACTIVIDAD_PADRE,ID_ACTIVIDAD,ID_TIPO_PERIODICIDAD,ID_PERIODICIDAD,ANIO,ID_ESTATUS,ID_ENTIDAD,ID_ESTATUS_CIFRA) as t WHERE VECES > 1) C1 LEFT JOIN (SELECT COUNT(*) AS EXISTENTROWS FROM "+vista+" A INNER JOIN "+tabla+" B ON A.ID_VARIABLE_COMPUESTA = B.ID_VARIABLE_COMPUESTA AND A.ID_VARIABLE_PADRE = B.ID_VARIABLE_PADRE AND A.ID_VARIABLE = B.ID_VARIABLE AND A.ID_TIPO_DATO = B.ID_TIPO_DATO AND A.ID_ACTIVIDAD_COMPUESTA = B.ID_ACTIVIDAD_COMPUESTA AND A.ID_ACTIVIDAD_PADRE = B.ID_ACTIVIDAD_PADRE AND A.ID_ACTIVIDAD = B.ID_ACTIVIDAD AND A.ID_TIPO_PERIODICIDAD = B.ID_TIPO_PERIODICIDAD AND A.ID_PERIODICIDAD = B.ID_PERIODICIDAD AND A.ANIO = B.ANIO AND A.ID_ESTATUS = B.ID_ESTATUS AND A.ID_ENTIDAD = B.ID_ENTIDAD AND A.ID_ESTATUS_CIFRA = B.ID_ESTATUS_CIFRA AND A.ID_FUENTE = B.ID_FUENTE) C2 ON C1.CONT >= 0 and C2.EXISTENTROWS >= 0", CommandType.Text);
 
+                List<comp_vista> list = new List<comp_vista>();
+                if (rdr.HasRows)
+                {
+                    while (rdr.Read())
+                    {
+                        comp_vista f = new comp_vista()
+                        {
+                            cont = rdr["CONT"].ToString(),
+                            existentrows = rdr["EXISTENTROWS"].ToString()
+                        };
+                        list.Add(f);
+                    }
+                    rdr.Close();
+                    rdr = null;
+                    string data = JsonConvert.SerializeObject(list);
+
+                    return data;
+                }
+            }
+            catch (Exception )
+            {
+                return "nomms";
+                //throw ex;
+            }
+            return "";
+        }
     }
 }
 
@@ -927,4 +962,14 @@ public class catalogo
     public string id_catalogo { set; get; }
     public string nombre { set; get; }
 }
-
+public class catalogos
+{
+    public string id_catalogo { set; get; }
+    public string nombre { set; get; }
+    public string T_trabajo { set; get; }
+}
+public class comp_vista
+{
+    public string cont { set; get; }
+    public string existentrows { set; get; }
+}

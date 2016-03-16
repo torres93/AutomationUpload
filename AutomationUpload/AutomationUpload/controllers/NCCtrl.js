@@ -1,14 +1,67 @@
 ﻿var app = angular.module("AutomationUpload");
 
 
-app.controller("userCtrl", function ($scope, $http, authUsers, sesionesControl) {
+app.controller("userCtrl", function ($scope, $http, authUsers, sesionesControl, $mdDialog) {
 
     $http.post("wsApp.asmx/getModelos").success(function ($response) {
-        console.log($response);
+        //console.log($response);
         $scope.modelos = $response;
     });
-   
 
+    $scope.validaVista = function (catalogoV1, catalogoV2)
+    {
+        var m = JSON.stringify({ vista: catalogoV1, tabla: catalogoV2 });
+        $http.post("wsApp.asmx/validaCargaVista", m).success(function ($response) {
+            
+            if ($response.d== "nomms") {
+                $mdDialog.show(
+                             $mdDialog.alert()
+                             .clickOutsideToClose(true)
+                             .title('Campos de tablas diferentes')
+                             .content()
+                             .ok('Aceptar')
+                             )
+            } else {
+                $scope.validarV = JSON.parse($response.d);
+
+                if ($scope.validarV[0].cont == '0' && $scope.validarV[0].existentrows == '0') {
+                            $mdDialog.show(
+                              $mdDialog.alert()
+                              .clickOutsideToClose(true)
+                              .title('Valicación completa')
+                              .content()
+                              .ok('Aceptar')
+                              )
+                } else if ($scope.validarV[0].cont != '0') {
+                            $mdDialog.show(
+                              $mdDialog.alert()
+                              .clickOutsideToClose(true)
+                              .title('Existen '+$scope.validarV[0].cont+' lineas Repetidos en ' +catalogoV1 )
+                              .content()
+                              .ok('Aceptar')
+                              )
+                } else if ($scope.validarV[0].existentrows != '0') {
+                    $mdDialog.show(
+                      $mdDialog.alert()
+                      .clickOutsideToClose(true)
+                      .title('Existen ' + $scope.validarV[0].existentrows + ' lineas Repetidos en ' + catalogoV2)
+                      .content()
+                      .ok('Aceptar')
+                      )
+                } else {
+                    $mdDialog.show(
+                      $mdDialog.alert()
+                      .clickOutsideToClose(true)
+                      .title('Existen lineas Repetidos en ' + catalogoV1 +' y '+catalogoV2)
+                      .content()
+                      .ok('Aceptar')
+                      )
+                }
+            }
+       
+        });
+    }
+   
     $scope.configModeloVista = function (modelo)
     {
         var res;
@@ -20,9 +73,13 @@ app.controller("userCtrl", function ($scope, $http, authUsers, sesionesControl) 
         $scope.id_modelo = res;
         var m = JSON.stringify({ modelo: res });
         $http.post("wsApp.asmx/getEncuestas",m).success(function ($response) {
-            console.log($response);
+            //console.log($response);
             $scope.encuestas = JSON.parse($response.d);
         })
+        $http.post("wsApp.asmx/getCatalogosModelo",m).success(function ($response) {
+            //console.log($response);
+            $scope.catalogos = JSON.parse($response.d);
+        });
     }
 
     $scope.configVista = function (encuesta) {
@@ -33,7 +90,7 @@ app.controller("userCtrl", function ($scope, $http, authUsers, sesionesControl) 
             }
         };
         modeloJson = JSON.stringify({ model: modelo });
-        $http.post("wsApp.asmx/getCampos", modeloJson).success(function ($response) {
+        $http.post("wsApp.asmx/getCampoCatalogo", modeloJson).success(function ($response) {
             $scope.campos = JSON.parse($response.d);
         });
     }
