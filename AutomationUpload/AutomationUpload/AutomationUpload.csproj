@@ -76,6 +76,7 @@
     <Content Include="css\bootstrap.min.css" />
     <Content Include="css\nc.css" />
     <Content Include="css\ui.css" />
+    <Content Include="directive\file_upload.js" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="imgs\icos\aceptar.svg" />
     <Content Include="imgs\icos\buscar.svg" />
