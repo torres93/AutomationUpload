@@ -76,6 +76,7 @@
     <Content Include="css\bootstrap.min.css" />
     <Content Include="css\nc.css" />
     <Content Include="css\ui.css" />
+    <Content Include="directives\file_upload.js" />
     <Content Include="imgs\icos\aceptar.svg" />
     <Content Include="imgs\icos\buscar.svg" />
     <Content Include="imgs\icos\calendario.svg" />
@@ -124,7 +125,7 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="directives\" />
+    <Folder Include="tem_files\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

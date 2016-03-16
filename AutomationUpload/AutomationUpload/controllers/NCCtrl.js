@@ -10,7 +10,7 @@ app.controller("userCtrl", function ($scope, $http, authUsers, sesionesControl, 
 
     $scope.validaVista = function (catalogoV1, catalogoV2)
     {
-        var m = JSON.stringify({ vista: catalogoV1, tabla: catalogoV2 });
+        var m = JSON.stringify({ vista: catalogoV1, tabla: catalogoV2 ,insTbl:''});
         $http.post("wsApp.asmx/validaCargaVista", m).success(function ($response) {
             
             if ($response.d== "nomms") {
@@ -32,6 +32,10 @@ app.controller("userCtrl", function ($scope, $http, authUsers, sesionesControl, 
                               .content()
                               .ok('Aceptar')
                               )
+                            var m = JSON.stringify({ insTbl: catalogoV1, vista: '', tabla: '' });
+                            $http.post("wsApp.asmx/validaCargaVista", m).success(function ($response) {
+                            });
+
                 } else if ($scope.validarV[0].cont != '0') {
                             $mdDialog.show(
                               $mdDialog.alert()
@@ -105,7 +109,7 @@ app.controller("userCtrl", function ($scope, $http, authUsers, sesionesControl, 
     }
 })
 
-app.controller("NCCtrl", ["$scope","$http","$au_validator", function ($scope,$http,$validator) {
+app.controller("NCCtrl", ["$scope", "$http", "$au_validator", "fileUpload", function ($scope, $http, $validator, fileUpload) {
     $scope.pathFile = "";
     $scope.path = "";
     $scope.data;
@@ -122,15 +126,10 @@ app.controller("NCCtrl", ["$scope","$http","$au_validator", function ($scope,$ht
     }
     $scope.fnBringTable = function () {
 
-        var data = JSON.stringify({
-
-            file: $scope.path
-        });
-        $http.post("wsApp.asmx/getTable", data).success(function ($response) {
-            console.log($response.d);
-            $scope.data = JSON.parse($response.d);
+        var file = $scope.archivo;
+        fileUpload.validatorFile(file).then(function (res) {
+            $scope.data = res.data;
             document.getElementById("tableContainer").removeAttribute("hidden");
-            console.log($scope.data);
         });
     };
     $scope.NotePath = function()

@@ -110,9 +110,9 @@
             <div layout="row">
                 <div>
                     
-                    <input class="ng-hide" id="fileSearch"  type="file" onchange="angular.element(this).scope().NotePath()" ng-model="filePath" placeholder="" />
+                    <input class="ng-hide" id="fileSearch" file-model="archivo" type="file" onchange="angular.element(this).scope().NotePath()" ng-model="filePath" placeholder="" />
                     <label for="fileSearch" class="md-button md-raised md-primary">Buscar Archivo</label>
-                    {{filePath}}
+            
                 </div >
                 <div style="width:100%">
                     <input type="text" id="filepath" name="name" ng-model="pathShort" style="width:100%; min-height:36px;margin:6px 8px" />

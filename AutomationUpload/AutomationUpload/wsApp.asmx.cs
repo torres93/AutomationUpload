@@ -267,17 +267,20 @@ namespace AutomationUpload
         }
 
         [WebMethod]
-        public string getTable(string file)
+        public void getTable( )
         {
-            string init = "";
-            if (file != "")
+           HttpPostedFile file=Context.Request.Files[0];
+           file.SaveAs(Server.MapPath(@"tem_files\") +file.FileName);
+            string init = "a";
+            if (init != null)
             {
                 try
                 {
                     OleDbConnectionStringBuilder csb = new OleDbConnectionStringBuilder();
                     csb["Provider"] = "Microsoft.ACE.OLEDB.12.0";
-                    csb["Data Source"] = file;
+                    csb["Data Source"] = Server.MapPath(@"tem_files\"+file.FileName);
                     csb["Extended Properties"] = "Excel 12.0 Xml";
+             
 
                     using (OleDbConnection con = new System.Data.OleDb.OleDbConnection(csb.ToString()))
                     {
@@ -285,8 +288,10 @@ namespace AutomationUpload
 
                         using (OleDbCommand olecmd = new OleDbCommand("SELECT * FROM [Hoja1$]", con))
                         {
+                           
                             OleDbDataReader rdr = olecmd.ExecuteReader();
                             int columns = rdr.FieldCount;
+                            
                             init = "[";
                             if (rdr.HasRows)
                             {
@@ -324,19 +329,23 @@ namespace AutomationUpload
                         }
 
                     }
-
-                    return init;
+                    foreach (var item in System.IO.Directory.GetFiles(Server.MapPath(@"tem_files")))
+                    {
+                        System.IO.File.Delete(item);
+                    }
+                    Context.Response.Write(init);
                 }
                 catch (Exception ex)
                 {
-                    return init;
+                    throw ex;
                 }
 
             }
             else
             {
-                return init;
+                
             }
+         
         }
 
         [WebMethod]
@@ -871,42 +880,51 @@ namespace AutomationUpload
                 throw ex;
             }
         }
-        
+
         [WebMethod]
-        public string validaCargaVista(string vista, string tabla)
+        public string validaCargaVista(string vista, string tabla, string insTbl)
         {
             try
             {
-                cnx = new cnx();
-
-                rdr = cnx.ExecuteCommand("SELECT C1.CONT AS CONT, C2.EXISTENTROWS AS EXISTENTROWS FROM (SELECT COUNT(VECES) AS CONT FROM (select COUNT(*) AS VECES from  "+vista+"  group by ID_FUENTE ,ID_VARIABLE_COMPUESTA,ID_VARIABLE,ID_TIPO_DATO,ID_ACTIVIDAD_COMPUESTA,ID_ACTIVIDAD_PADRE,ID_ACTIVIDAD,ID_TIPO_PERIODICIDAD,ID_PERIODICIDAD,ANIO,ID_ESTATUS,ID_ENTIDAD,ID_ESTATUS_CIFRA) as t WHERE VECES > 1) C1 LEFT JOIN (SELECT COUNT(*) AS EXISTENTROWS FROM "+vista+" A INNER JOIN "+tabla+" B ON A.ID_VARIABLE_COMPUESTA = B.ID_VARIABLE_COMPUESTA AND A.ID_VARIABLE_PADRE = B.ID_VARIABLE_PADRE AND A.ID_VARIABLE = B.ID_VARIABLE AND A.ID_TIPO_DATO = B.ID_TIPO_DATO AND A.ID_ACTIVIDAD_COMPUESTA = B.ID_ACTIVIDAD_COMPUESTA AND A.ID_ACTIVIDAD_PADRE = B.ID_ACTIVIDAD_PADRE AND A.ID_ACTIVIDAD = B.ID_ACTIVIDAD AND A.ID_TIPO_PERIODICIDAD = B.ID_TIPO_PERIODICIDAD AND A.ID_PERIODICIDAD = B.ID_PERIODICIDAD AND A.ANIO = B.ANIO AND A.ID_ESTATUS = B.ID_ESTATUS AND A.ID_ENTIDAD = B.ID_ENTIDAD AND A.ID_ESTATUS_CIFRA = B.ID_ESTATUS_CIFRA AND A.ID_FUENTE = B.ID_FUENTE) C2 ON C1.CONT >= 0 and C2.EXISTENTROWS >= 0", CommandType.Text);
-
-                List<comp_vista> list = new List<comp_vista>();
-                if (rdr.HasRows)
+                if (insTbl != null && vista == "" && tabla == "")
                 {
-                    while (rdr.Read())
+                    SqlDataReader r;
+                    cnx cnxAux = new cnx();
+                    r = cnxAux.ExecuteCommand("INSERT INTO TR_CIFRA_TRANSITORIA2 SELECT * FROM " + insTbl + "", CommandType.Text);
+                    return "exito";
+                }
+                else
+                {
+                    cnx = new cnx();
+                    rdr = cnx.ExecuteCommand("SELECT C1.CONT AS CONT, C2.EXISTENTROWS AS EXISTENTROWS FROM (SELECT COUNT(VECES) AS CONT FROM (select COUNT(*) AS VECES from  " + vista + "  group by ID_FUENTE ,ID_VARIABLE_COMPUESTA,ID_VARIABLE,ID_TIPO_DATO,ID_ACTIVIDAD_COMPUESTA,ID_ACTIVIDAD_PADRE,ID_ACTIVIDAD,ID_TIPO_PERIODICIDAD,ID_PERIODICIDAD,ANIO,ID_ESTATUS,ID_ENTIDAD,ID_ESTATUS_CIFRA) as t WHERE VECES > 1) C1 LEFT JOIN (SELECT COUNT(*) AS EXISTENTROWS FROM " + vista + " A INNER JOIN " + tabla + " B ON A.ID_VARIABLE_COMPUESTA = B.ID_VARIABLE_COMPUESTA AND A.ID_VARIABLE_PADRE = B.ID_VARIABLE_PADRE AND A.ID_VARIABLE = B.ID_VARIABLE AND A.ID_TIPO_DATO = B.ID_TIPO_DATO AND A.ID_ACTIVIDAD_COMPUESTA = B.ID_ACTIVIDAD_COMPUESTA AND A.ID_ACTIVIDAD_PADRE = B.ID_ACTIVIDAD_PADRE AND A.ID_ACTIVIDAD = B.ID_ACTIVIDAD AND A.ID_TIPO_PERIODICIDAD = B.ID_TIPO_PERIODICIDAD AND A.ID_PERIODICIDAD = B.ID_PERIODICIDAD AND A.ANIO = B.ANIO AND A.ID_ESTATUS = B.ID_ESTATUS AND A.ID_ENTIDAD = B.ID_ENTIDAD AND A.ID_ESTATUS_CIFRA = B.ID_ESTATUS_CIFRA AND A.ID_FUENTE = B.ID_FUENTE) C2 ON C1.CONT >= 0 and C2.EXISTENTROWS >= 0", CommandType.Text);
+                    List<comp_vista> list = new List<comp_vista>();
+                    if (rdr.HasRows)
                     {
-                        comp_vista f = new comp_vista()
+                        while (rdr.Read())
                         {
-                            cont = rdr["CONT"].ToString(),
-                            existentrows = rdr["EXISTENTROWS"].ToString()
-                        };
-                        list.Add(f);
-                    }
-                    rdr.Close();
-                    rdr = null;
-                    string data = JsonConvert.SerializeObject(list);
+                            comp_vista f = new comp_vista()
+                            {
+                                cont = rdr["CONT"].ToString(),
+                                existentrows = rdr["EXISTENTROWS"].ToString()
+                            };
+                            list.Add(f);
+                        }
+                        rdr.Close();
+                        rdr = null;
+                        string data = JsonConvert.SerializeObject(list);
 
-                    return data;
+                        return data;
+                    }
                 }
             }
-            catch (Exception )
+            catch (Exception)
             {
                 return "nomms";
                 //throw ex;
             }
             return "";
         }
+
     }
 }
 
