@@ -76,7 +76,7 @@
     <Content Include="css\bootstrap.min.css" />
     <Content Include="css\nc.css" />
     <Content Include="css\ui.css" />
-    <Content Include="directives\file_upload.js" />
+    <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="imgs\icos\aceptar.svg" />
     <Content Include="imgs\icos\buscar.svg" />
     <Content Include="imgs\icos\calendario.svg" />
@@ -114,6 +114,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff2" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

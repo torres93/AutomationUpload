@@ -70,7 +70,7 @@
 
 
 
-    <div id="RCCF" ng-show="menu=='RMC'">
+    <div id="RMC" ng-show="menu=='RMC'">
         <div></div>
         <div class="row">
             <div class="col-xs-6">
@@ -93,8 +93,8 @@
 
                 <md-list ng-cloak>
                     <md-list-item ng-repeat="c in catalogos track by $index">
-                        <p> {{c.nombre}} </p>
                         <md-checkbox class="md-secondary" ng-checked="c.selected" ng-click="c.selected=!c.selected"></md-checkbox>
+                        <p> {{c.nombre}} </p>
                     </md-list-item>
                 </md-list>
             </div>
@@ -104,8 +104,133 @@
             <div class="col-xs-1">
             </div>
             <div class="col-xs-3">
-                <button ng-click="actualizaTI_ER()" class="btn btn-default" > Guardar Relacion</button>
+                <button ng-click="actualizaTI_ER()" class="btn btn-default"> Guardar Relacion</button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div id="RCC" ng-show="menu=='RCC'">
+        <div></div>
+        <div class="row">
+            <div class="col-xs-6">
+                <md-input-container>
+                    <label>Catalogos</label>
+                    <md-select ng-model="Catalogos">
+                        <md-option ng-repeat="cm in catalogModelo track by $index" ng-click="cambiaCatalogoModelo(cm)">{{cm.nombre}}</md-option>
+                    </md-select>
+                </md-input-container>
+
+            </div>
+            <div class="col-xs-6">
+
+
+            </div>
+
+
+
+        </div>
+        <p></p>
+        <div class="row">
+            <div class="col-xs-6">
+                <h3>Campos:</h3>
+
+                <md-input-container class="md-icon-float md-block">
+                    <label>Buscar campo</label>
+                    <md-icon md-svg-src="../imgs/icos/buscar.svg" class="name"></md-icon>
+                    <input ng-model="buscar" type="text">
+                </md-input-container>
+
+                <md-list>
+                    <md-list-item class="md-3-line" ng-repeat="c in campos | filter:buscar track by $index">
+                        <!--<img ng-src="../imgs/icos/user.svg" class="md-avatar" alt="Examen" />-->
+                        <div class="md-list-item-text" layout="column">
+
+                            <h3><b>Nombre: </b>{{c.nombre}}</h3>
+                            <p><b>Id: </b>{{c.id_campo}} </p>
+                            <h3 ng-if="c.selected"><b>Descripcion: </b><small>{{c.descripcion}}</small></h3>
+                            </p></p>
+                            <p ng-if="c.selected"><b>Tipo: </b>{{c.tipo}}</p><p ng-if="c.selected"> <b>Llave: </b>{{c.llave}} </p><p ng-if="c.selected">
+                                <b>Nulo: </b>{{c.nulos}}
+                            </p>
+                        </div>
+
+                        <div class="md-list-item-text" layout="column">
+                            <md-button class="md-raised  md-primary" ng-if="c.selected" ng-click="editarCampo(c,true)">Editar</md-button>
+                            <p></p>
+                            <md-button class="md-raised md-warn" ng-if="c.selected" ng-click="editarCampo(c,false)">Eliminar</md-button>
+                            <md-button class="md-raised" ng-if="!c.selected" ng-click="editarCampo(c,true);">Añadir</md-button>
+                        </div>
+                        <md-divider></md-divider>
+                        <br>
+                    </md-list-item>
+                </md-list>
+
+                <p></p>
+
+                <!--<md-list ng-cloak>
+                    <md-list-item ng-repeat="c in campos track by $index" ng-if="c.selected">
+                        <p> {{c.nombre}} </p>
+                        <md-checkbox class="md-secondary" ng-checked="c.selected" ng-click="c.selected=!c.selected"></md-checkbox>
+                    </md-list-item>
+                </md-list>-->
+
+            </div>
+
+            <div class="col-xs-6" ng-if="campoEdit.nombre!=''">
+
+                <h1>Información del usuario</h1>
+                <md-input-container class="md-icon-float md-block">
+                    <label>Nombre</label>
+                    <md-icon md-svg-src="../imgs/icos/user.svg" class="name"></md-icon>
+                    <input ng-model="campoEdit.nombre" type="text" ng-disabled="true">
+                </md-input-container>
+
+                <md-input-container class="md-icon-float md-block">
+                    <label>Descripción</label>
+                    <input ng-model="campoEdit.descripcion" type="text">
+                    <span ng-if="campoEdit.descripcion==''" class="glyphicon   glyphicon-exclamation-sign" aria-hidden="true"></span>
+                </md-input-container>
+
+                <md-input-container class="md-icon-float md-block">
+                    <md-switch ng-model="campoEdit.llave">
+                        Llave
+                    </md-switch>
+                </md-input-container>
+
+                <md-input-container class="md-icon-float md-block">
+
+                    <md-switch ng-model="campoEdit.nulos">
+                        Nulo
+                    </md-switch>
+                </md-input-container>
+
+                <md-input-container>
+                    <label>Tipo de Dato</label>
+                    <md-select ng-model="tiposD">
+                        <md-option ng-repeat="(index,t) in tiposDato track by $index" ng-click="campoEdit.id_tipo=t.id_tipo_dato;campoEdit.tipo=t.nombre" ng-value="{{t}}" ng-selected="(t.id_tipo_dato==campoEdit.id_tipo) ? true:false">{{t.nombre}}</md-option>
+                    </md-select>
+                    <span ng-if="campoEdit.id_tipo==''" class="glyphicon   glyphicon-exclamation-sign" aria-hidden="true"></span>
+                </md-input-container>
+
+                <!-- Use floating label instead of placeholder -->
+                <md-button class="md-raised md-warn" ng-click="campoEdit=campoEmpt">Cancelar <md-icon md-svg-src="../imgs/icos/cancelar.svg" class="name"></md-icon></md-button>
+                <md-button class="md-raised md-primary" ng-click="actualizaTR_TABLA(campoEdit)">Guardar <md-icon md-svg-src="../imgs/icos/aceptar.svg" class="name"></md-icon></md-button>
+
+
+            </div>
+        </div>
+        <p></p>
+        <div class="row">
+            <div class="col-xs-1">
+            </div>
+            <div class="col-xs-3">
+                <button ng-click="actualizaTR_TABLA()" class="btn btn-default"> Guardar Relacion</button>
             </div>
         </div>
     </div>
 </div>
+
+
+

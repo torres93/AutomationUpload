@@ -772,6 +772,8 @@ namespace AutomationUpload
             return "";
         }
 
+
+
         [WebMethod]
         public void getCatalogos()
         {
@@ -925,6 +927,246 @@ namespace AutomationUpload
             return "";
         }
 
+
+
+
+
+
+
+        ////////////////////////////////////////////////////////
+
+        [WebMethod]
+        public void insCampoTabla(string catalogo, string modelo, string campo, string descripcion, string llave, string nulo, string tipo)
+        {
+            try
+            {
+                cnx = new cnx();
+                SqlParameter[] parameters = new SqlParameter[7];
+                parameters[0] = new SqlParameter() { ParameterName = "@catalogo", Value = catalogo };
+                parameters[1] = new SqlParameter() { ParameterName = "@modelo", Value = modelo };
+                parameters[2] = new SqlParameter() { ParameterName = "@campo", Value = campo };
+                parameters[3] = new SqlParameter() { ParameterName = "@descripcion", Value = descripcion };
+                parameters[4] = new SqlParameter() { ParameterName = "@llave", Value = llave };
+                parameters[5] = new SqlParameter() { ParameterName = "@nulo", Value = nulo };
+                parameters[6] = new SqlParameter() { ParameterName = "@tipo", Value = tipo };
+                rdr = cnx.ExecuteCommand("INSERT INTO TR_TABLA (ID_MODELO,ID_CATALOGO,ID_CAMPO,DESCRIPCION,LLAVE,NULOS,ID_TIPO_DATO) VALUES (@modelo,@catalogo,@campo,@descripcion,@llave,@nulo,@tipo) ", CommandType.Text, parameters);
+
+
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+        [WebMethod]
+        public void updateCampoTabla(string catalogo, string modelo, string campo, string descripcion, string llave, string nulo, string tipo)
+        {
+            try
+            {
+                cnx = new cnx();
+                SqlParameter[] parameters = new SqlParameter[7];
+                parameters[0] = new SqlParameter() { ParameterName = "@catalogo", Value = catalogo };
+                parameters[1] = new SqlParameter() { ParameterName = "@modelo", Value = modelo };
+                parameters[2] = new SqlParameter() { ParameterName = "@campo", Value = campo };
+                parameters[3] = new SqlParameter() { ParameterName = "@descripcion", Value = descripcion };
+                parameters[4] = new SqlParameter() { ParameterName = "@llave", Value = llave };
+                parameters[5] = new SqlParameter() { ParameterName = "@nulo", Value = nulo };
+                parameters[6] = new SqlParameter() { ParameterName = "@tipo", Value = tipo };
+                rdr = cnx.ExecuteCommand("UPDATE TR_TABLA SET  DESCRIPCION=@descripcion,LLAVE=@llave,NULOS=@nulo,ID_TIPO_DATO=@tipo WHERE ID_MODELO=@modelo AND ID_CATALOGO=@catalogo AND ID_CAMPO=@campo", CommandType.Text, parameters);
+
+
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
+        [WebMethod]
+        public void delCampoTabla(string catalogo, string modelo, string campo)
+        {
+            try
+            {
+                cnx = new cnx();
+                SqlParameter[] parameters = new SqlParameter[3];
+                parameters[0] = new SqlParameter() { ParameterName = "@catalogo", Value = catalogo };
+                parameters[1] = new SqlParameter() { ParameterName = "@modelo", Value = modelo };
+                parameters[2] = new SqlParameter() { ParameterName = "@campo", Value = campo };
+                rdr = cnx.ExecuteCommand("DELETE FROM TR_TABLA WHERE ID_MODELO=@modelo AND ID_CATALOGO=@catalogo AND ID_CAMPO=@campo", CommandType.Text, parameters);
+
+
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
+
+
+        [WebMethod]
+        public string getCatalogosDelModelo(string modelo)
+        {
+            try
+            {
+                cnx = new cnx();
+                SqlParameter[] parameters = new SqlParameter[1];
+                parameters[0] = new SqlParameter() { ParameterName = "@modelo", Value = modelo };
+                rdr = cnx.ExecuteCommand("SELECT ER.ID_CATALOGO,C.NOMBRE from TC_CATALOGO C INNER JOIN TI_ER ER ON C.ID_CATALOGO=ER.ID_CATALOGO WHERE ID_MODELO=@modelo", CommandType.Text, parameters);
+
+                List<catalogo> list = new List<catalogo>();
+                if (rdr.HasRows)
+                {
+                    while (rdr.Read())
+                    {
+                        catalogo c = new catalogo()
+                        {
+                            nombre = rdr["NOMBRE"].ToString(),
+                            id_catalogo = rdr["ID_CATALOGO"].ToString()
+                        };
+                        list.Add(c);
+                    }
+                    rdr.Close();
+                    rdr = null;
+                    string data = JsonConvert.SerializeObject(list);
+                    //Context.Response.Write(data);
+                    return data;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            return "";
+        }
+
+
+        [WebMethod]
+        public void getTipoDatos()
+        {
+            try
+            {
+                cnx = new cnx();
+                rdr = cnx.ExecuteCommand("SELECT * FROM TC_TIPO_DATO_NET", CommandType.Text);
+
+
+                List<tipoDato> list = new List<tipoDato>();
+                if (rdr.HasRows)
+                {
+                    while (rdr.Read())
+                    {
+                        tipoDato f = new tipoDato()
+                        {
+                            id_tipo_dato = rdr["ID_TIPO_DATO"].ToString(),
+                            nombre = rdr["NOMBRE"].ToString()
+                        };
+                        list.Add(f);
+                    }
+                    rdr.Close();
+                    rdr = null;
+                    string data = JsonConvert.SerializeObject(list);
+                    Context.Response.Write(data);
+                    //return data;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
+
+        [WebMethod]
+        public string getCamposCatalogoModelo(string modelo, string catalogo)
+        {
+            try
+            {
+                cnx = new cnx();
+                SqlParameter[] parameters = new SqlParameter[2];
+                parameters[0] = new SqlParameter() { ParameterName = "@modelo", Value = modelo };
+                parameters[1] = new SqlParameter() { ParameterName = "@catalogo", Value = catalogo };
+                rdr = cnx.ExecuteCommand("SELECT C.ID_CAMPO,C.NOMBRE,TD.ID_TIPO_DATO,TD.NOMBRE AS TIPO_DATO,DESCRIPCION,LLAVE,NULOS FROM (TR_TABLA T INNER JOIN TC_TIPO_DATO_NET TD ON T.ID_TIPO_DATO=TD.ID_TIPO_DATO) INNER JOIN TC_CAMPO C ON T.ID_CAMPO=C.ID_CAMPO WHERE T.ID_MODELO=@modelo AND T.ID_CATALOGO=@catalogo", CommandType.Text, parameters);
+
+                List<campo> list = new List<campo>();
+                if (rdr.HasRows)
+                {
+                    while (rdr.Read())
+                    {
+                        campo c = new campo()
+                        {
+                            nombre = rdr["NOMBRE"].ToString(),
+                            id_campo = rdr["ID_CAMPO"].ToString(),
+                            tipo = rdr["TIPO_DATO"].ToString(),
+                            id_tipo = rdr["ID_TIPO_DATO"].ToString(),
+                            descripcion = rdr["DESCRIPCION"].ToString(),
+                            llave = (rdr["LLAVE"].ToString() == "True"),
+                            nulos = (rdr["NULOS"].ToString() == "True")
+                        };
+                        list.Add(c);
+                    }
+                    rdr.Close();
+                    rdr = null;
+                    string data = JsonConvert.SerializeObject(list);
+                    //Context.Response.Write(data);
+                    return data;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            return "";
+        }
+
+        [WebMethod]
+        public void getCampos()
+        {
+            try
+            {
+                cnx = new cnx();
+                rdr = cnx.ExecuteCommand("SELECT * FROM TC_CAMPO", CommandType.Text);
+
+
+                List<campo> list = new List<campo>();
+                if (rdr.HasRows)
+                {
+                    while (rdr.Read())
+                    {
+                        campo f = new campo()
+                        {
+                            id_campo = rdr["ID_CAMPO"].ToString(),
+                            nombre = rdr["NOMBRE"].ToString()
+                        };
+                        list.Add(f);
+                    }
+                    rdr.Close();
+                    rdr = null;
+                    string data = JsonConvert.SerializeObject(list);
+                    Context.Response.Write(data);
+                    //return data;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
     }
 }
 
@@ -969,6 +1211,10 @@ public class campo
     public string id_campo { set; get; }
     public string nombre { set; get; }
     public string tipo { set; get; }
+    public string id_tipo { set; get; }
+    public string descripcion { set; get; }
+    public bool llave { set; get; }
+    public bool nulos { set; get; }
 }
 public class modelo
 {
@@ -990,4 +1236,9 @@ public class comp_vista
 {
     public string cont { set; get; }
     public string existentrows { set; get; }
+}
+public class tipoDato
+{
+    public string id_tipo_dato { set; get; }
+    public string nombre { set; get; }
 }
