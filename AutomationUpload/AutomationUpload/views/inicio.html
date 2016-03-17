@@ -115,11 +115,11 @@
             
                 </div >
                 <div style="width:100%">
-                    <input type="text" id="filepath" name="name" ng-model="pathShort" style="width:100%; min-height:36px;margin:6px 8px" />
+                    <input type="text" id="filepath" name="name" ng-model="pathShort" style="width:100%; min-height:36px;margin:6px 8px" readonly ="readonly" />
                 </div>
             </div>
             <div layout="row">
-                <div class="alert">
+                <div class="alert" ng-show="path == ''">
                     <strong>Error: </strong>Por favor ingrese una direccion valida
                 </div>
             </div>
