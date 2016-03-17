@@ -77,8 +77,8 @@
                                 <md-checkbox class="md-secondary" ng-checked="exist(c,selected)"></md-checkbox>
                             </md-list-item>
                         </md-list>
-                        </md-content>
-                    </div>
+                    </md-content>
+                </div>
                 <div flex style="padding-left:3%;">
                     <h3>Información</h3>
                     <div layout="row">
@@ -109,13 +109,13 @@
         <div>
             <div layout="row">
                 <div>
-                    
+
                     <input class="ng-hide" id="fileSearch" file-model="archivo" type="file" onchange="angular.element(this).scope().NotePath()" ng-model="filePath" placeholder="" />
                     <label for="fileSearch" class="md-button md-raised md-primary">Buscar Archivo</label>
-            
-                </div >
+
+                </div>
                 <div style="width:100%">
-                    <input type="text" id="filepath" name="name" ng-model="pathShort" style="width:100%; min-height:36px;margin:6px 8px" readonly ="readonly" />
+                    <input type="text" id="filepath" name="name" ng-model="pathShort" style="width:100%; min-height:36px;margin:6px 8px" readonly="readonly" />
                 </div>
             </div>
             <div layout="row">
@@ -130,7 +130,7 @@
             </div>
 
             <div layout="row">
-                <div  flex="70">
+                <div flex="70">
                     <div id="tableContainer" class="row text-center" hidden>
                         <table class="table-au">
                             <tr ng-repeat="x in data track by $index">
@@ -138,6 +138,14 @@
                             </tr>
                         </table>
                     </div>
+                </div>
+                <div flex>
+                    <md-list ng-cloak>
+                        <md-list-item>
+                            <p>Validación de estructura</p>
+                            <md-checkbox class="md-secondary" ng-model="VdE"></md-checkbox>
+                        </md-list-item>
+                    </md-list>
                 </div>
             </div>
             <div layout="row">
@@ -152,13 +160,13 @@
                     <button type="button" class="btn btn-primary" ng-click="fnBringTable()">Vista previa</button>
                 </div>
 
-                
+
 
                 <div class="row text-center">
                     <button type="button" class="btn btn-primary" ng-click="fnValidate()">Validar</button>
                 </div>
             </div>-->
-          
+
 
         </div>
     </div>
@@ -170,25 +178,43 @@
             <div flex="50">
                 <md-input-container>
                     <label>Catalogos</label>
-                    <md-select ng-model="catalogoV1" ng-change="">
+                    <md-select ng-model="catalogoV1" ng-click="vistaValidada=true">
                         <md-option ng-repeat="c in catalogos track by $index">{{c.nombre}}</md-option>
                     </md-select>
                 </md-input-container>
             </div>
             <div flex="100">
                 <md-input-container>
-                    <label>Tabla trabajo</label>
-                    <md-select ng-model="catalogoV2" >
+                    <label>Tabla de Cifras</label>
+                    <md-select ng-model="catalogoV2">
                         <md-option ng-if="d.T_trabajo !=''" ng-repeat="d in catalogos ">{{d.T_trabajo}}</md-option>
-                       
+
                     </md-select>
                 </md-input-container>
             </div>
-            </div>
+        </div>
         <div layout="row">
             <div layout="row">
                 <div class="text-center" flex="100">
                     <md-button type="button" class="md-raised md-primary" ng-click="validaVista(catalogoV1,catalogoV2)">Validar</md-button>
+                </div>
+            </div>
+        </div>
+        <div layout="row">
+            <div layout="row">
+                <div class="text-center" flex="100">
+                    <md-button type="button" class="md-raised md-primary" ng-click="replicaVista()" ng-disabled="vistaValidada">Replicar la Vista</md-button>
+                </div>
+            </div>
+        </div>
+        <div layout="row">
+            <div flex="70">
+                <div id="tableContainerView" class="row text-center">
+                    <table class="table-au">
+                        <!--<tr ng-repeat="x in data track by $index">
+                <td ng-repeat="i in x track by $index">{{i}}</td>
+            </tr>-->
+                    </table>
                 </div>
             </div>
         </div>
