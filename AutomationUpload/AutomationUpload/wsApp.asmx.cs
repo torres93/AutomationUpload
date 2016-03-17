@@ -267,20 +267,20 @@ namespace AutomationUpload
         }
 
         [WebMethod]
-        public void getTable( )
-        {
-           HttpPostedFile file=Context.Request.Files[0];
-           file.SaveAs(Server.MapPath(@"tem_files\") +file.FileName);
-            string init = "a";
-            if (init != null)
+        public void getTable()
+        {         
+            string init = "";
+            if (Context.Request.Files.Count > 0)
             {
+                HttpPostedFile file = Context.Request.Files[0];
+                file.SaveAs(Server.MapPath(@"tem_files\") + file.FileName);
+                List<string[]> list = new List<string[]>();
                 try
                 {
                     OleDbConnectionStringBuilder csb = new OleDbConnectionStringBuilder();
                     csb["Provider"] = "Microsoft.ACE.OLEDB.12.0";
-                    csb["Data Source"] = Server.MapPath(@"tem_files\"+file.FileName);
+                    csb["Data Source"] = Server.MapPath(@"tem_files\" + file.FileName); ;
                     csb["Extended Properties"] = "Excel 12.0 Xml";
-             
 
                     using (OleDbConnection con = new System.Data.OleDb.OleDbConnection(csb.ToString()))
                     {
@@ -288,44 +288,31 @@ namespace AutomationUpload
 
                         using (OleDbCommand olecmd = new OleDbCommand("SELECT * FROM [Hoja1$]", con))
                         {
-                           
                             OleDbDataReader rdr = olecmd.ExecuteReader();
                             int columns = rdr.FieldCount;
-                            
-                            init = "[";
                             if (rdr.HasRows)
                             {
-
-                                init += "{" + '"' + "data" + '"' + ":[";
+                                string[] n = new string[columns];
                                 for (int i = 0; i < columns; i++)
                                 {
-                                    init += '"' + rdr.GetName(i).ToString() + '"';
-                                    if (i != columns - 1)
-                                    {
-                                        init += ",";
-                                    }
+                                    n[i] = rdr.GetName(i).ToString();
                                 }
-                                init += "]},";
-
-
+                                list.Add(n);
                                 while (rdr.Read())
                                 {
-                                    init += "{" + '"' + "data" + '"' + ":[";
+                                    n = new string[columns];
                                     for (int i = 0; i < columns; i++)
                                     {
-                                        init += '"' + rdr[i].ToString() + '"';
-                                        if (i != columns - 1)
-                                        {
-                                            init += ",";
-                                        }
+                                        n[i] = rdr[i].ToString();
                                     }
-                                    init += "]},";
+                                    list.Add(n);
                                 }
                             }
-                            init = init.Substring(0, init.Length - 1);
+
                             rdr.Close();
                             rdr.Dispose();
-                            init += "]";
+                            init = JsonConvert.SerializeObject(list);
+                            //return init;
                         }
 
                     }
@@ -337,16 +324,16 @@ namespace AutomationUpload
                 }
                 catch (Exception ex)
                 {
-                    throw ex;
+                    //return init;
                 }
 
             }
             else
             {
-                
+                //return init;
             }
-         
         }
+
 
         [WebMethod]
         public string createUsuario(string nombre, string apellido_p, string apellido_m, string contrasena, string correo, Object[] fuentes)

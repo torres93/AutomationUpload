@@ -130,11 +130,11 @@
             </div>
 
             <div layout="row">
-                <div  flex="100">
+                <div  flex="70">
                     <div id="tableContainer" class="row text-center" hidden>
                         <table class="table-au">
                             <tr ng-repeat="x in data track by $index">
-                                <td ng-repeat="i in x.data track by $index">{{i}}</td>
+                                <td ng-repeat="i in x track by $index">{{i}}</td>
                             </tr>
                         </table>
                     </div>
