@@ -131,7 +131,7 @@
 
             <div layout="row">
                 <div flex="70">
-                    <div id="tableContainer" class="row text-center" hidden>
+                    <div id="tableContainer" class="row text-center" ng-show="tablaFull">
                         <table class="table-au">
                             <tr ng-repeat="x in data track by $index">
                                 <td ng-repeat="i in x track by $index">{{i}}</td>
@@ -140,10 +140,10 @@
                     </div>
                 </div>
                 <div flex>
-                    <md-list ng-cloak>
+                    <md-list ng-cloak ng-show="tablaFull">
                         <md-list-item>
                             <p>Validación de estructura</p>
-                            <md-checkbox class="md-secondary" ng-model="VdE"></md-checkbox>
+                            <md-checkbox class="md-secondary" ng-checked="VdE"></md-checkbox>
                         </md-list-item>
                     </md-list>
                 </div>

@@ -42,10 +42,12 @@ app.controller("NCCtrl", ["$scope", "$http", "$au_validator", "fileUpload", func
     $scope.pathFile = "";
     $scope.path = "";
     $scope.data;
+    $scope.VdE = true;
+    $scope.tablaFull=false;
     $scope.fnValidate = function () {
         if ($scope.data != null) {
             var n = $scope.$parent.id_modelo
-            $validator.fnValidateLength(n, $scope.data);
+            $scope.VdE = $validator.fnValidateLength(n, $scope.data);
         }
         else {
             alert("No mi chavo primero anexe un archivo...")
@@ -56,7 +58,7 @@ app.controller("NCCtrl", ["$scope", "$http", "$au_validator", "fileUpload", func
         var file = $scope.archivo;
         fileUpload.validatorFile(file).then(function (res) {
             $scope.data = res.data;
-            document.getElementById("tableContainer").removeAttribute("hidden");
+            $scope.tablaFull = true;
         });
     };
     $scope.NotePath = function () {
