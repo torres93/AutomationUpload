@@ -118,7 +118,7 @@ app.controller("NCCtrl", ["$scope", "$http", "$au_validator", "fileUpload", func
         if($scope.data!=null)
         {
             var n = $scope.$parent.id_modelo
-            $validator.fnValidateLength(n);
+            $validator.fnValidateLength(n, $scope.data);
         }
         else {
             alert("No mi chavo primero anexe un archivo...")

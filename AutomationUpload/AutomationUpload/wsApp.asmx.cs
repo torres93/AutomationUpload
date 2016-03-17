@@ -587,16 +587,15 @@ namespace AutomationUpload
                     {
                         SqlDataReader r;
                         cnx cnxAux = new cnx();
-                        r = cnxAux.ExecuteCommand("SELECT * FROM TR_TABLA WHERE ID_MODELO =" + id_modelo + " AND ID_CATALOGO = " + rdr["ID_CATALOGO"].ToString(), CommandType.Text);
+                        r = cnxAux.ExecuteCommand("SELECT T.ID_CAMPO,T.DESCRIPCION,T1.NOMBRE FROM TR_TABLA T INNER JOIN TC_CAMPO T1 ON T1.ID_CAMPO = T.ID_CAMPO  WHERE ID_MODELO =" + id_modelo + " AND ID_CATALOGO = " + rdr["ID_CATALOGO"].ToString(), CommandType.Text);
                         if (r.HasRows)
                         {
                             while (r.Read())
                             {
                                 campo f = new campo()
                                 {
-                                    id_campo = rdr["ID_CAMPO"].ToString(),
-                                    tipo = rdr["TIPO"].ToString(),
-                                    nombre = rdr["DESCRIPCION"].ToString()
+                                    id_campo = r["ID_CAMPO"].ToString(),
+                                    nombre = r["NOMBRE"].ToString()
                                 };
                                 list.Add(f);
                             }
