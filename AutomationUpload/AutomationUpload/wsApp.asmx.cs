@@ -273,13 +273,13 @@ namespace AutomationUpload
             if (Context.Request.Files.Count > 0)
             {
                 HttpPostedFile file = Context.Request.Files[0];
-                file.SaveAs(Server.MapPath(@"tem_files\") + file.FileName);
+                file.SaveAs(Server.MapPath(@"tem_files\") + System.IO.Path.GetFileName(file.FileName));
                 List<string[]> list = new List<string[]>();
                 try
                 {
                     OleDbConnectionStringBuilder csb = new OleDbConnectionStringBuilder();
                     csb["Provider"] = "Microsoft.ACE.OLEDB.12.0";
-                    csb["Data Source"] = Server.MapPath(@"tem_files\" + file.FileName); ;
+                    csb["Data Source"] = Server.MapPath(@"tem_files\" + System.IO.Path.GetFileName(file.FileName)); ;
                     csb["Extended Properties"] = "Excel 12.0 Xml";
 
                     using (OleDbConnection con = new System.Data.OleDb.OleDbConnection(csb.ToString()))
@@ -385,6 +385,26 @@ namespace AutomationUpload
                 throw ex;
             }
 
+        }
+
+        [WebMethod]
+        public string deleteUsuarios(string id) {
+            try
+            {
+                cnx = new cnx();
+                cnx cnxAux = new cnx();
+
+                
+                
+                cnxAux.ExecuteCommand("DELETE FROM TI_FUENTE_USUARIO WHERE ID_USUARIO=" + id + "", CommandType.Text);
+                cnx.ExecuteCommand("DELETE FROM TC_USUARIO WHERE ID_USUARIO=" + id + "", CommandType.Text);
+                return "Eliminado";
+            }
+            catch (Exception ex)
+            {
+                
+                throw ex;
+            }
         }
 
         [WebMethod]
@@ -1161,6 +1181,102 @@ namespace AutomationUpload
                 //throw ex;
             }
         }
+        [WebMethod]
+        public string MostraVista(string vista)
+        {
+            try
+            {
+
+                cnx = new cnx();
+                SqlParameter[] parameters = new SqlParameter[1];
+                parameters[0] = new SqlParameter() { ParameterName = "@VISTA", Value = vista };
+                rdr = cnx.ExecuteCommand("PR_MUESTRA_VISTA", CommandType.StoredProcedure, parameters);
+                List<mostrarVista> list = new List<mostrarVista>();
+                if (rdr.HasRows)
+                {
+                    while (rdr.Read())
+                    {
+                        mostrarVista f = new mostrarVista()
+                        {
+                            C1 = rdr["1"].ToString(),
+                            C2 = rdr["2"].ToString(),
+                            C3 = rdr["3"].ToString(),
+                            C4 = rdr["4"].ToString(),
+                            C5 = rdr["5"].ToString(),
+                            C6 = rdr["6"].ToString(),
+                            C7 = rdr["7"].ToString(),
+                            C8 = rdr["8"].ToString(),
+                            C9 = rdr["9"].ToString(),
+                            C10 = rdr["10"].ToString(),
+                            C11 = rdr["11"].ToString(),
+                            C12 = rdr["12"].ToString(),
+                            C13 = rdr["13"].ToString(),
+                            C14 = rdr["14"].ToString(),
+                            C15 = rdr["15"].ToString(),
+                            C16 = rdr["16"].ToString(),
+                            C17 = rdr["17"].ToString(),
+                            C18 = rdr["18"].ToString(),
+                            C19 = rdr["19"].ToString(),
+                            C20 = rdr["20"].ToString(),
+                            C21 = rdr["21"].ToString(),
+                            C22 = rdr["22"].ToString(),
+                            C23 = rdr["23"].ToString(),
+                            C24 = rdr["24"].ToString(),
+                            C25 = rdr["25"].ToString(),
+                            C26 = rdr["26"].ToString()
+
+                        };
+                        list.Add(f);
+                    }
+                    rdr.Close();
+                    rdr = null;
+                    string data = JsonConvert.SerializeObject(list);
+
+                    return data;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return "exception";
+                //throw ex;
+            }
+            return "";
+
+
+            /* try
+             {
+                 cnx = new cnx();
+                 rdr = cnx.ExecuteCommand("SELECT ID_FUENTE, ID_VARIABLE_COMPUESTA FROM "+vista+"", CommandType.Text);
+
+
+                 List<Mostrar_vista> list = new List<Mostrar_vista>();
+                 if (rdr.HasRows)
+                 {
+                     while (rdr.Read())
+                     {
+                         Mostrar_vista f = new Mostrar_vista()
+                         {
+                             id_fuente = rdr["ID_FUENTE"].ToString(),
+                             id_variable_compuesta = rdr["ID_VARIABLE_COMPUESTA"].ToString()
+                         };
+                         list.Add(f);
+                     }
+                     rdr.Close();
+                     rdr = null;
+                     string data = JsonConvert.SerializeObject(list);
+                     //Context.Response.Write(data);
+                     return data;
+                 }
+                 return "";
+             }
+             catch (Exception ex)
+             {
+
+                 throw ex;
+             }*/
+        }
+
     }
 }
 
@@ -1235,4 +1351,33 @@ public class tipoDato
 {
     public string id_tipo_dato { set; get; }
     public string nombre { set; get; }
+}
+public class mostrarVista
+{
+    public string C1 { set; get; }
+    public string C2 { set; get; }
+    public string C3 { set; get; }
+    public string C4 { set; get; }
+    public string C5 { set; get; }
+    public string C6 { set; get; }
+    public string C7 { set; get; }
+    public string C8 { set; get; }
+    public string C9 { set; get; }
+    public string C10 { set; get; }
+    public string C11 { set; get; }
+    public string C12 { set; get; }
+    public string C13 { set; get; }
+    public string C14 { set; get; }
+    public string C15 { set; get; }
+    public string C16 { set; get; }
+    public string C17 { set; get; }
+    public string C18 { set; get; }
+    public string C19 { set; get; }
+    public string C20 { set; get; }
+    public string C21 { set; get; }
+    public string C22 { set; get; }
+    public string C23 { set; get; }
+    public string C24 { set; get; }
+    public string C25 { set; get; }
+    public string C26 { set; get; }
 }

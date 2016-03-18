@@ -30,10 +30,10 @@ app.controller("NCVCtrl", function ($scope, $http, authUsers, sesionesControl, $
                       )
                     $scope.vistaValidada = false;
 
-                    //$http.post("wsApp.asmx/validaCargaVista", m).success(function ($response) {
-                    //    console.log($response.d);
-
-                    //});
+                    $http.post("wsApp.asmx/MostraVista", m).success(function ($response) {
+                        //console.log($response.d);
+                        $scope.datos = JSON.parse($response.d);
+                    });
 
 
 
@@ -67,7 +67,7 @@ app.controller("NCVCtrl", function ($scope, $http, authUsers, sesionesControl, $
         });
     }
     $scope.configVista = function (encuesta) {
-
+        
         for (var i = 0; i < $scope.encuestas.length; i++) {
             if ($scope.encuestas[i].nombre == encuesta) {
                 modelo = $scope.encuestas[i].id_modelo;
@@ -76,19 +76,23 @@ app.controller("NCVCtrl", function ($scope, $http, authUsers, sesionesControl, $
         modeloJson = JSON.stringify({ model: modelo });
         $http.post("wsApp.asmx/getCampoCatalogo", modeloJson).success(function ($response) {
             $scope.campos = JSON.parse($response.d);
+            //console.log($response.d);
         });
     }
-    $scope.replicaVista = function () {
-        $http.post("wsApp.asmx/replicaVista", modeloJson).success(function ($response) {
+    $scope.replicaVista = function (catalogoV1, catalogoV2) {
+        var m = JSON.stringify({ vista: catalogoV1, tabla: catalogoV2 });
+        $http.post("wsApp.asmx/replicaVista", m).success(function ($response) {
+            
             if ($response.d == "") {
 
                 $mdDialog.show(
                              $mdDialog.alert()
                              .clickOutsideToClose(true)
-                             .title('Ocurrio Algun Error!')
+                             .title('')
                              .content(' La replica se realizó satisfactoriamente')
                              .ok('Aceptar')
                              )
+                $scope.vistaValidada = true;
             } else {
                 $mdDialog.show(
                              $mdDialog.alert()

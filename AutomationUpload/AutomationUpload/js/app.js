@@ -139,7 +139,7 @@ app.factory('authUsers', function ($http, $location, sesionesControl, $mdDialog)
 app.run(function ($rootScope, $location, authUsers) {
 
     //creamos un array con las rutas que queremos controlar
-    var rutasPrivadas = ["/admin"];
+    var rutasPrivadas = [];
     //al cambiar de rutas
     $rootScope.$on('$routeChangeStart', function () {
         //si en el array rutasPrivadas existe $location.path(), locationPath en el login

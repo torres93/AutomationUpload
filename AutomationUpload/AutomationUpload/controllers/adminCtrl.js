@@ -69,6 +69,23 @@ app.controller("adminCtrl", function ($scope, $http, sesionesControl, authUsers,
         });
 
     }
+    $scope.eliminarUsuario = function (usr) {
+      
+
+        $http.post("wsApp.asmx/deleteUsuarios", usr).success(function ($response) {
+            $mdDialog.show(
+                $mdDialog.alert()
+                    .clickOutsideToClose(true)
+                    .title('Aviso')
+                    .content('Usuario eliminado')
+                    .ok('Aceptar')
+            )
+            $http.post("wsApp.asmx/getUsuarios").success(function ($response) {
+                $scope.usuarios = $response;
+            });
+        });
+
+    }
     $scope.creaarUsuario = function (userN) {
         userN.fuentes = $scope.selected;
         $http.post("wsApp.asmx/createUsuario", userN).success(function ($response) {
