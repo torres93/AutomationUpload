@@ -38,37 +38,142 @@ app.controller("userCtrl", function ($scope, $http, authUsers, sesionesControl, 
     }
 })
 
-app.controller("NCCtrl", ["$scope", "$http", "$au_validator", "fileUpload", function ($scope, $http, $validator, fileUpload) {
+app.controller("NCCtrl", ["$scope", "$http", "$au_validator", "fileUpload", "$mdDialog", function ($scope, $http, $validator, fileUpload, $mdDialog) {
     $scope.pathFile = "";
     $scope.path = "";
     $scope.data;
-    $scope.VdE = true;
-    $scope.tablaFull=false;
+    $scope.VdE = false;
+    $scope.tablaFull = false;
     $scope.fnValidate = function () {
-        if ($scope.data != null) {
+        if ($scope.$parent.id_modelo != null && $scope.$parent.id_modelo != "") {
             var n = $scope.$parent.id_modelo
-            $scope.VdE = $validator.fnValidateLength(n, $scope.data);
+            if ($scope.data != null && $scope.data != "") {
+                $validator.fnValidateLength(n, $scope.data).then(function (res) {
+                    var d = JSON.parse(res.data.d);
+                    var validation = false;
+                    if (d.length == $scope.data[0].length) {
+
+                        for (i = 0; i < $scope.data[0].length; i++) {
+                            for (x = 0; x < d.length; x++) {
+                                if (d[x].nombre == $scope.data[0][i]) {
+                                    validation = true;
+                                    break;
+                                }
+                                else {
+                                    validation = false;
+                                }
+                            }
+                            if (validation == false) {
+                                break;
+                            }
+                        }
+
+                        $scope.VdE = validation;
+                        console.log($scope.VdE);
+
+                    }
+                    else {
+
+                        $scope.VdE = false;
+                        console.log($scope.VdE);
+                    }
+                    if ($scope.VdE == true) {
+                        console.log($scope.VdE);
+                        $mdDialog.show(
+                        $mdDialog.alert()
+                          .clickOutsideToClose(true)
+                          .title('Aviso')
+                          .content('Ha pasado todas las validaciones')
+                          .ok('Aceptar'))
+                    }
+                    else {
+                        console.log($scope.VdE);
+                        $mdDialog.show(
+                       $mdDialog.alert()
+                          .clickOutsideToClose(true)
+                          .title('Aviso')
+                          .content('No ha pasado alguna de las validaciones')
+                          .ok('Aceptar')
+                      )
+                    }
+                });
+               
+              
+            }
+
+           
+        else {
+                $mdDialog.show(
+                $mdDialog.alert()
+                   .clickOutsideToClose(true)
+                   .title('Aviso')
+                   .content('No se ha seleccionado un archivo a validar')
+                   .ok('Aceptar')
+               )
+        }
+    }
+else {
+            $mdDialog.show(
+                $mdDialog.alert()
+                    .clickOutsideToClose(true)
+                    .title('Aviso')
+                    .content('No se ha seleccionado un "Modelo"')
+                    .ok('Aceptar')
+                )
+}
+}
+
+
+    $scope.fnReplicate = function () {
+        if ($scope.VdE == true) {
+
+            var json = JSON.stringify({
+                jsonobj: $scope.data
+            })
+            $http.post("wsApp.asmx/insertWorkTable", json).success(function($response){
+
+            }).error(function(x,y,z)
+            {
+                console.log(x);
+                console.log(y);
+            })
         }
         else {
-            alert("No mi chavo primero anexe un archivo...")
+            $mdDialog.show(
+           $mdDialog.alert()
+              .clickOutsideToClose(true)
+              .title('Aviso')
+              .content('No se pasaron con exito todas las validaciones')
+              .ok('Aceptar'))
         }
     }
-    $scope.fnBringTable = function () {
+$scope.fnBringTable = function () {
 
-        var file = $scope.archivo;
-        fileUpload.validatorFile(file).then(function (res) {
-            $scope.data = res.data;
+    var file = $scope.archivo;
+    fileUpload.validatorFile(file).then(function (res) {
+        $scope.data = res.data;
+        if ($scope.data != "") {
             $scope.tablaFull = true;
-        });
-    };
-    $scope.NotePath = function () {
+        }
+        else {
+            $scope.tablaFull = false;
+            $mdDialog.show(
+            $mdDialog.alert()
+               .clickOutsideToClose(true)
+               .title('Aviso')
+               .content('No se ha seleccionado un archivo para mostrar o el archivo presento algun error')
+               .ok('Aceptar'))
+        }
+    });
+};
+$scope.NotePath = function () {
 
-        $scope.$apply(function () {
-            fullName = $('#fileSearch').val();
-            shortName = fullName.match(/[^\/\\]+$/);
-            $scope.pathShort = $('#filepath').value = shortName;
-            $scope.path = fullName;
-        })
+    $scope.$apply(function () {
+        fullName = $('#fileSearch').val();
+        shortName = fullName.match(/[^\/\\]+$/);
+        $scope.pathShort = $('#filepath').value = shortName;
+        $scope.path = fullName;
+    })
 
-    }
+}
 }])

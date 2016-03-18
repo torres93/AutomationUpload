@@ -552,28 +552,29 @@ namespace AutomationUpload
                 key += irow[2].ToString();
 
 
+
                 DataRow xrow = dtclean.NewRow();
-                xrow.ItemArray= ((DataRow)irow).ItemArray;
+                xrow.ItemArray = ((DataRow)irow).ItemArray;
                 int i = list.IndexOf(key);
-                if(i==-1)
+                if (i == -1)
                 {
                     list.Add(key);
                     dtclean.Rows.Add(xrow);
                 }
-                
+
             }
 
 
 
             //DataTable dtDistinct = new DataTable();
 
-            
+
             try
             {
 
-  
-                        cnx cnxAux = new cnx("conexion1");
-                        SqlParameter[] _params = new SqlParameter[1]{
+
+                cnx cnxAux = new cnx("conexion1");
+                SqlParameter[] _params = new SqlParameter[1]{
                             new SqlParameter{
                                 ParameterName = "@TABLE",
                                 Value = dtclean,
@@ -582,8 +583,7 @@ namespace AutomationUpload
                         };
 
 
-                       int rows= cnxAux.ExecuteTransaction("PR_TRANSAC_AUTOMATIZACION", CommandType.StoredProcedure,_params);
-               
+                int rows = cnxAux.ExecuteTransaction("PR_TRANSAC_AUTOMATIZACION", CommandType.StoredProcedure, _params);
             }
             catch (Exception ex)
             {
@@ -1180,6 +1180,67 @@ namespace AutomationUpload
                 return "exception";
                 //throw ex;
             }
+        }
+        [WebMethod]
+        public int insertWorkTable(string[][] jsonobj)
+        {
+
+            DataTable dt = new DataTable();
+
+
+            int columns = 0;
+
+            for (int i = 0; i < jsonobj.GetLength(0); i++)
+            {
+                if (i == 0)
+                {
+                    for (int x = 0; x < jsonobj[0].GetLength(0); x++)
+                    {
+                        dt.Columns.Add(jsonobj[0][x]);
+                        columns++;
+                    }
+
+                }
+                else
+                {
+                    DataRow dr = dt.NewRow();
+                    for (int n = 0; n < columns; n++)
+                    {
+
+                        dr[n] = jsonobj[i][n];
+
+
+                    }
+                    dt.Rows.Add(dr);
+                }
+
+            }
+
+
+
+            try
+            {
+
+
+                cnx cnxAux = new cnx("conexion1");
+                SqlParameter[] _params = new SqlParameter[1]{
+                            new SqlParameter{
+                                ParameterName = "@TABLE",
+                                Value = dt,
+                                SqlDbType = SqlDbType.Structured
+                            }
+                        };
+
+
+                int rows = cnxAux.ExecuteTransaction("PR_TRANSAC_AUTOMATIZACION", CommandType.StoredProcedure, _params);
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return 0;
         }
         [WebMethod]
         public string MostraVista(string vista)
