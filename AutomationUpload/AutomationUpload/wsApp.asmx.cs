@@ -1184,7 +1184,7 @@ namespace AutomationUpload
         [WebMethod]
         public int insertWorkTable(string[][] jsonobj)
         {
-
+            int rows = 0;
             DataTable dt = new DataTable();
 
 
@@ -1232,7 +1232,7 @@ namespace AutomationUpload
                         };
 
 
-                int rows = cnxAux.ExecuteTransaction("PR_TRANSAC_AUTOMATIZACION", CommandType.StoredProcedure, _params);
+                 rows = cnxAux.ExecuteTransaction("PR_TRANSAC_AUTOMATIZACION", CommandType.StoredProcedure, _params);
 
             }
             catch (Exception ex)
@@ -1240,8 +1240,67 @@ namespace AutomationUpload
                 throw ex;
             }
 
-            return 0;
+            return rows;
         }
+
+        [WebMethod]
+
+        public bool Duplicitywatcher(string[][] jsonobj)
+        {
+            DataTable dt = new DataTable();
+
+            dt.Columns.Add("ID_FUENTE");
+            dt.Columns.Add("ID_VARIABLE");
+            dt.Columns.Add("ID_VARIABLE_COMPUESTA");
+            dt.Columns.Add("ID_VARIABLE_PADRE");
+            dt.Columns.Add("ID_TIPO_DATO");
+            dt.Columns.Add("ID_ACTIVIDAD");
+            dt.Columns.Add("ID_ACTIVIDAD_PADRE");
+            dt.Columns.Add("ID_ACTIVIDAD_COMPUESTA");
+            dt.Columns.Add("ID_TIPO_PERIODICIDAD");
+            dt.Columns.Add("ANIO");
+            dt.Columns.Add("ID_ENTIDAD");
+
+           
+            for(int i = 0 ;i<jsonobj.Length;i++)
+            {
+                if(i!=0)
+                {
+                    DataRow dr = dt.NewRow();
+                    for (int x = 0; x < dt.Columns.Count; x++)
+                    {
+                        for (int f = 0; f < jsonobj[i].Length; f++)
+                        {
+                            if (dt.Columns[x].ColumnName == jsonobj[0][f])
+                            {
+                                dr[x] = jsonobj[i][f];
+                                break;
+                            }
+                        }
+                        
+                    }
+                    dt.Rows.Add(dr);
+                }                
+            }
+
+            string[] columns = new string[dt.Columns.Count];
+            
+            for (int i = 0; i < columns.Length;i++)
+            {
+                columns[i] = dt.Columns[i].ColumnName;
+            }
+            DataTable tabledistinct = dt.DefaultView.ToTable(true,columns);
+
+            if(tabledistinct.Rows.Count == dt.Rows.Count)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+
+      
         [WebMethod]
         public string MostraVista(string vista)
         {

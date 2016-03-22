@@ -43,6 +43,7 @@ app.controller("NCCtrl", ["$scope", "$http", "$au_validator", "fileUpload", "$md
     $scope.path = "";
     $scope.data;
     $scope.VdE = false;
+    $scope.VdDI = false;
     $scope.tablaFull = false;
     $scope.fnValidate = function () {
         if ($scope.$parent.id_modelo != null && $scope.$parent.id_modelo != "") {
@@ -77,32 +78,60 @@ app.controller("NCCtrl", ["$scope", "$http", "$au_validator", "fileUpload", "$md
                         $scope.VdE = false;
                         console.log($scope.VdE);
                     }
+
+
                     if ($scope.VdE == true) {
-                        console.log($scope.VdE);
-                        $mdDialog.show(
-                        $mdDialog.alert()
-                          .clickOutsideToClose(true)
-                          .title('Aviso')
-                          .content('Ha pasado todas las validaciones')
-                          .ok('Aceptar'))
-                    }
+                        var json = JSON.stringify({
+                            jsonobj: $scope.data
+                        })
+                        $http.post("wsApp.asmx/Duplicitywatcher", json).success(function ($response) {
+                            console.log($response);
+                            $scope.VdDI = $response.d;
+
+                            if($scope.VdDI==true)
+                            {
+                                console.log($scope.VdE);
+                                $mdDialog.show(
+                               $mdDialog.alert()
+                                  .clickOutsideToClose(true)
+                                  .title('Aviso')
+                                  .content('Se completo toda la validacion')
+                                  .ok('Aceptar')
+                              )
+                            }
+                            else {
+                                console.log($scope.VdE);
+                                $mdDialog.show(
+                               $mdDialog.alert()
+                                  .clickOutsideToClose(true)
+                                  .title('Aviso')
+                                  .content('No  paso la validacion de duplicidad interna')
+                                  .ok('Aceptar')
+                              )
+                            }
+
+                        }).error(function (x, y, z) {
+
+                        })
+                    }       
+                    
                     else {
                         console.log($scope.VdE);
                         $mdDialog.show(
                        $mdDialog.alert()
                           .clickOutsideToClose(true)
                           .title('Aviso')
-                          .content('No ha pasado alguna de las validaciones')
+                          .content('No  paso la validacion de estructura')
                           .ok('Aceptar')
                       )
                     }
                 });
-               
-              
+
+
             }
 
-           
-        else {
+
+            else {
                 $mdDialog.show(
                 $mdDialog.alert()
                    .clickOutsideToClose(true)
@@ -110,9 +139,9 @@ app.controller("NCCtrl", ["$scope", "$http", "$au_validator", "fileUpload", "$md
                    .content('No se ha seleccionado un archivo a validar')
                    .ok('Aceptar')
                )
+            }
         }
-    }
-else {
+        else {
             $mdDialog.show(
                 $mdDialog.alert()
                     .clickOutsideToClose(true)
@@ -120,20 +149,26 @@ else {
                     .content('No se ha seleccionado un "Modelo"')
                     .ok('Aceptar')
                 )
-}
-}
+        }
+    }
 
 
     $scope.fnReplicate = function () {
-        if ($scope.VdE == true) {
+        if ($scope.VdE == true && $scope.VdDI == true) {
 
             var json = JSON.stringify({
                 jsonobj: $scope.data
             })
-            $http.post("wsApp.asmx/insertWorkTable", json).success(function($response){
+            $http.post("wsApp.asmx/insertWorkTable", json).success(function ($response) {
 
-            }).error(function(x,y,z)
-            {
+                $mdDialog.show(
+          $mdDialog.alert()
+             .clickOutsideToClose(true)
+             .title('Aviso')
+             .content('Filas afectadas:' + $response.d)
+             .ok('Aceptar'))
+
+            }).error(function (x, y, z) {
                 console.log(x);
                 console.log(y);
             })
@@ -147,33 +182,33 @@ else {
               .ok('Aceptar'))
         }
     }
-$scope.fnBringTable = function () {
+    $scope.fnBringTable = function () {
 
-    var file = $scope.archivo;
-    fileUpload.validatorFile(file).then(function (res) {
-        $scope.data = res.data;
-        if ($scope.data != "") {
-            $scope.tablaFull = true;
-        }
-        else {
-            $scope.tablaFull = false;
-            $mdDialog.show(
-            $mdDialog.alert()
-               .clickOutsideToClose(true)
-               .title('Aviso')
-               .content('No se ha seleccionado un archivo para mostrar o el archivo presento algun error')
-               .ok('Aceptar'))
-        }
-    });
-};
-$scope.NotePath = function () {
+        var file = $scope.archivo;
+        fileUpload.validatorFile(file).then(function (res) {
+            $scope.data = res.data;
+            if ($scope.data != "") {
+                $scope.tablaFull = true;
+            }
+            else {
+                $scope.tablaFull = false;
+                $mdDialog.show(
+                $mdDialog.alert()
+                   .clickOutsideToClose(true)
+                   .title('Aviso')
+                   .content('No se ha seleccionado un archivo para mostrar o el archivo presento algun error')
+                   .ok('Aceptar'))
+            }
+        });
+    };
+    $scope.NotePath = function () {
 
-    $scope.$apply(function () {
-        fullName = $('#fileSearch').val();
-        shortName = fullName.match(/[^\/\\]+$/);
-        $scope.pathShort = $('#filepath').value = shortName;
-        $scope.path = fullName;
-    })
+        $scope.$apply(function () {
+            fullName = $('#fileSearch').val();
+            shortName = fullName.match(/[^\/\\]+$/);
+            $scope.pathShort = $('#filepath').value = shortName;
+            $scope.path = fullName;
+        })
 
-}
+    }
 }])
